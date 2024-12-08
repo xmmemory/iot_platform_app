@@ -1,0 +1,294 @@
+<template>
+    <div class="app">
+        <!-- 地址 -->
+        <div class="location">
+            <div class="address" @click="toggleDropdown">
+                {{ selectedLocation }}
+                <i class="icon-dropdown">▼</i>
+            </div>
+            <div v-if="showDropdown" class="dropdown-menu">
+                <div v-for="(location, index) in locations" :key="index" class="dropdown-item"
+                    @click="selectLocation(location)">
+                    {{ location }}
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- 标签选择 -->
+            <div class="tabs-wrapper">
+                <div class="tabs" ref="tabsContainer">
+                    <span v-for="(tab, index) in tabs" :key="index" :class="['tab', { active: activeTab === index }]"
+                        @click="selectTab(index)">
+                        {{ tab }}
+                    </span>
+                </div>
+                <div class="dropdown-icon" @click="toggleTabDropdown">
+                    <img src="@/static/svg/select.svg" alt="dropdown-icon" class="icon" />
+                </div>
+                <div v-if="showTabDropdown" class="tabs-dropdown-menu" @click.stop>
+                    <div v-for="(tab, index) in tabs" :key="index" class="dropdown-item" @click="selectTab(index)">
+                        {{ tab }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设备卡片区域 -->
+            <div class="device-cards">
+                <div v-if="filteredDevices.length === 0" class="no-devices">
+                    此区域暂未分配设备
+                </div>
+                <div v-else v-for="(device, index) in filteredDevices" :key="index" class="device-card"
+                    @click="goToDevicePage(device)">
+                    <img :src="device.icon" alt="device-icon" class="device-icon" />
+                    <div class="device-info">
+                        <div class="device-title">{{ device.name }}</div>
+                        <div class="device-details">{{ device.location }} | {{ device.status }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<script setup lang="ts">
+    import { ref, computed } from "vue";
+
+    // 地址数据
+    const locations = ref(["通化智控鸡舍（一期）", "腾冲项目", "莱芜项目"]);
+    const selectedLocation = ref(locations.value[0]); // 默认地址
+
+    // 标签数据
+    const tabs = ["全部区域", "区域1", "区域2", "区域3", "区域4", "区域5", "区域6", "区域7"];
+    const activeTab = ref(0); // 当前激活的标签索引
+
+    // 设备数据
+    const devices = ref([
+        { id: 1, name: "机器人0", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 2, name: "机器人1", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 3, name: "机器人2", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 4, name: "机器人3", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 5, name: "机器人4", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 6, name: "机器人5", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 7, name: "机器人6", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 8, name: "机器人7", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 9, name: "机器人8", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 10, name: "机器人9", location: "区域1", status: "长期离线", icon: "static/logo.png" },
+        { id: 11, name: "机器人10", location: "区域2", status: "长期离线", icon: "static/logo.png" },
+        { id: 12, name: "机器人11", location: "区域2", status: "长期离线", icon: "static/logo.png" },
+        { id: 13, name: "机器人12", location: "区域2", status: "长期离线", icon: "static/logo.png" },
+        { id: 14, name: "机器人13", location: "区域3", status: "长期离线", icon: "static/logo.png" },
+        { id: 15, name: "机器人14", location: "区域3", status: "离线 11 天", icon: "static/logo.png" },
+        { id: 16, name: "机器人15", location: "区域4", status: "在线", icon: "static/logo.png" },
+    ]);
+
+    // 过滤设备数据
+    const filteredDevices = computed(() => {
+        if (activeTab.value === 0) {
+            return devices.value; // 全部区域：显示所有设备
+        } else {
+            return devices.value.filter(
+                (device) => device.location === tabs[activeTab.value]
+            );
+        }
+    });
+
+    // 切换标签
+    const selectTab = (index : number) => {
+        activeTab.value = index;
+        showTabDropdown.value = false; // 隐藏标签下拉菜单
+    };
+
+    // 地址下拉菜单逻辑
+    const showDropdown = ref(false);
+    const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
+    const selectLocation = (location : string) => {
+        selectedLocation.value = location;
+        showDropdown.value = false;
+    };
+
+    const showTabDropdown = ref(false);
+    // 切换 tabs 下拉菜单
+    const toggleTabDropdown = () => {
+        showTabDropdown.value = !showTabDropdown.value;
+    };
+
+    const goToDevicePage = (device: { id: any; name: any; status: any; location: any; }) => {
+        uni.navigateTo({
+            url: `/pages/device-detail/device-detail?id=${device.id}&name=${device.name}&status=${device.status}&location=${device.location}`,
+        });
+    };
+</script>
+
+
+<style lang="scss" scoped>
+    .app {
+        display: flex;
+        flex-direction: column;
+        background-color: #f5f5f5;
+        padding: 16px;
+
+        .location {
+            position: relative;
+            margin-bottom: 16px;
+
+            .address {
+                display: flex;
+                align-items: center;
+                font-size: 18px;
+                cursor: pointer;
+
+                i {
+                    margin-left: 8px;
+                    font-size: 14px;
+                }
+            }
+
+            .dropdown-menu {
+                position: absolute;
+                top: 40px;
+                left: 0;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                z-index: 111;
+                /* 确保下拉菜单浮动在其他内容之上 */
+
+                .dropdown-item {
+                    padding: 10px 16px;
+                    font-size: 16px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #f0f0f0;
+                    }
+                }
+            }
+        }
+
+        .tabs-wrapper {
+            position: relative;
+            /* 确保下拉菜单相对于 .tabs-wrapper 定位 */
+            display: flex;
+            align-items: center;
+            width: 100%;
+            overflow: visible;
+            /* 确保不会裁剪下拉菜单 */
+
+            .tabs {
+                display: flex;
+                gap: 16px;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding: 8px 0;
+                flex: 1;
+
+                &::-webkit-scrollbar {
+                    display: none; // 隐藏滚动条
+                }
+
+                .tab {
+                    flex-shrink: 0;
+                    padding: 8px 16px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    color: #666;
+                    border-radius: 8px;
+
+                    &.active {
+                        color: #000;
+                        font-weight: bold;
+                        background-color: #e0e0e0;
+                    }
+                }
+            }
+
+            .dropdown-icon {
+                padding: 20px;
+                cursor: pointer;
+
+                /* 确保最高层级 */
+                .icon {
+                    width: 16px;
+                    height: 16px;
+                    object-fit: contain;
+                    vertical-align: middle;
+                    /* 保证居中对齐 */
+                }
+            }
+        }
+
+        .tabs-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            /* 菜单位于触发器下方 */
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            /* 高优先级显示 */
+            width: auto;
+            max-width: 100%;
+            overflow: hidden;
+
+            .dropdown-item {
+                padding: 10px 16px;
+                font-size: 16px;
+                cursor: pointer;
+
+                &:hover {
+                    background: #f0f0f0;
+                }
+            }
+        }
+
+        .device-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+
+            .no-devices {
+                grid-column: 1 / -1;
+                /* 占据所有列 */
+                text-align: center;
+                font-size: 18px;
+                color: #888;
+                padding: 20px;
+                background-color: #f5f5f5;
+                border-radius: 8px;
+            }
+
+            .device-card {
+                background-color: #fff;
+                padding: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+
+                .device-icon {
+                    width: 60px;
+                    height: 60px;
+                    object-fit: cover;
+                    margin-bottom: 10px;
+                }
+
+                .device-info {
+                    .device-title {
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+
+                    .device-details {
+                        font-size: 14px;
+                        color: #666;
+                    }
+                }
+            }
+        }
+
+    }
+</style>
