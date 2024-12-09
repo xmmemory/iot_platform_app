@@ -29,6 +29,22 @@
                     }
                 }
             }
+        }, {
+            "path": "pages/tabBar/ucenter/ucenter",
+            "style": {
+                "navigationBarTitleText": "用户中心",
+                "app-plus": {
+                    "bounce": "vertical",
+                    "titleNView": {
+                        "buttons": [{
+                            "text": "\ue534",
+                            "fontSrc": "/static/uni.ttf",
+                            "fontSize": "22px",
+                            "color": "#FFFFFF"
+                        }]
+                    }
+                }
+            }
         },
         {
             "path": "pages/tabBar/component/component",
@@ -1404,6 +1420,11 @@
                 "iconPath": "static/template.png",
                 "selectedIconPath": "static/templateHL.png",
                 "text": "模板"
+            }, {
+                "pagePath": "pages/tabBar/ucenter/ucenter",
+                "iconPath": "static/tabbar/me.png",
+                "selectedIconPath": "static/tabbar/me_active.png",
+                "text": "用户中心"
             }
         ]
     }

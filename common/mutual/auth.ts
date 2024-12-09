@@ -5,22 +5,30 @@ export var login_status = ref<boolean>(false);
 
 function auth_confirm(res : { statusCode : string | number; data : any; }) {
     if (200 == res.statusCode) {
-        uni.hideToast();        
+        uni.showToast({
+            title: '登录成功',
+            icon: 'success',
+            mask: true,
+            duration: 500
+        });
         uni.setStorageSync('cookie', res.data);
         login_status.value = true;
         console.log("login succeed.")
     } else {
         uni.showToast({
-            title: '错误代码：' + res.statusCode,
+            title: res.data,
             icon: 'error',
             mask: true,
             duration: 1000
         });
+        uni.removeStorageSync('auth_userName');
+        uni.removeStorageSync('auth_password');
         console.log(res);
     }
 }
 
 export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }) {
+    console.log("login...")
     uni.showToast({
         title: '用户名密码验证',
         icon: 'loading',
