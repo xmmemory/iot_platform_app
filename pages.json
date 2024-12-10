@@ -30,6 +30,22 @@
                 }
             }
         }, {
+            "path": "pages/tabBar/discover/discover",
+            "style": {
+                "navigationBarTitleText": "发现",
+                "app-plus": {
+                    "bounce": "vertical",
+                    "titleNView": {
+                        "buttons": [{
+                            "text": "\ue534",
+                            "fontSrc": "/static/uni.ttf",
+                            "fontSize": "22px",
+                            "color": "#FFFFFF"
+                        }]
+                    }
+                }
+            }
+        }, {
             "path": "pages/tabBar/ucenter/ucenter",
             "style": {
                 "navigationBarTitleText": "用户中心",
@@ -1361,14 +1377,14 @@
             ]
         },
         {
-            "root": "pages/device-detail",
+            "root": "pages/device",
             "pages": [{
-                    "path": "device-detail"
+                    "path": "device_detail"
                 },
                 {
-                    "path": "device-detail_1"
+                    "path": "device_detail_1"
                 }
-            ],
+            ]
         }
     ],
     "globalStyle": {
@@ -1400,6 +1416,23 @@
                 "selectedIconPath": "static/tabbar/list_active.png",
                 "text": "设备列表"
             }, {
+                "pagePath": "pages/tabBar/discover/discover",
+                "iconPath": "static/tabbar/grid.png",
+                "selectedIconPath": "static/tabbar/grid_active.png",
+                "text": "发现"
+            }, {
+                "pagePath": "pages/tabBar/ucenter/ucenter",
+                "iconPath": "static/tabbar/me.png",
+                "selectedIconPath": "static/tabbar/me_active.png",
+                "text": "用户中心"
+            }
+            , {
+                "pagePath": "pages/tabBar/extUI/extUI",
+                "iconPath": "static/extui.png",
+                "selectedIconPath": "static/extuiHL.png",
+                "text": "扩展组件"
+            }
+            ,{
                 "pagePath": "pages/tabBar/component/component",
                 "iconPath": "static/component.png",
                 "selectedIconPath": "static/componentHL.png",
@@ -1411,20 +1444,10 @@
                 "selectedIconPath": "static/apiHL.png",
                 "text": "接口"
             }, {
-                "pagePath": "pages/tabBar/extUI/extUI",
-                "iconPath": "static/extui.png",
-                "selectedIconPath": "static/extuiHL.png",
-                "text": "扩展组件"
-            }, {
                 "pagePath": "pages/tabBar/template/template",
                 "iconPath": "static/template.png",
                 "selectedIconPath": "static/templateHL.png",
                 "text": "模板"
-            }, {
-                "pagePath": "pages/tabBar/ucenter/ucenter",
-                "iconPath": "static/tabbar/me.png",
-                "selectedIconPath": "static/tabbar/me_active.png",
-                "text": "用户中心"
             }
         ]
     }

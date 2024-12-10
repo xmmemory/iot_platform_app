@@ -1,4 +1,4 @@
-import { login_post_url, data_post_url } from "./server_parameter.ts";
+import { login_post_url, data_post_url } from "./server_parameter.ts"
 
 export function request_auth(data : { username : string; password : string; }, callback) {
     let header = {
@@ -35,6 +35,12 @@ function request_post(url : string, header : { "Content-Type" : string; }, data 
         },
         fail: (res) => {
             console.log(res);
+            uni.showToast({
+                title: res.errMsg,
+                icon: 'none',
+                mask: true,
+                duration: 2000
+            })
         },
     });
 }

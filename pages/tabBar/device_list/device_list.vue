@@ -25,7 +25,8 @@
                         </span>
                     </div>
                     <div class="dropdown-icon" @click="toggleTabDropdown">
-                        <img src="@/static/svg/select.svg" alt="dropdown-icon" class="icon" />
+                        <image src="/static/svg/select.svg" style="height: 20px;width: 20px;" mode="heightFix">
+                        </image>
                     </div>
                     <div v-if="showTabDropdown" class="tabs-dropdown-menu" @click.stop>
                         <div v-for="(area, index) in areas" :key="index" class="dropdown-item"
@@ -44,7 +45,7 @@
                         @click="goToDevicePage(device)">
                         <img :src="device.icon" alt="device-icon" class="device-icon" />
                         <div class="device-info">
-                            <div class="device-title">{{ device.name }}</div>
+                            <div class="device-title">{{ device.name }}{{ device.number }}</div>
                             <div class="device-details">{{ device.location }} | {{ device.status }}</div>
                         </div>
                     </div>
@@ -53,12 +54,14 @@
         </div>
     </template>
     <template v-else>
-        <navigator url="/pages/tabBar/ucenter/ucenter" open-type="switchTab" hover-class="other-navigator-hover">
-            <button type="default">登录，体验完整功能</button>
-        </navigator>
+        <view class="login-container">
+            <image class="company-logo" src="/static/company_logo/s-logo.png" mode="heightFix"></image>
+            <navigator url="/pages/tabBar/ucenter/ucenter" open-type="switchTab" hover-class="other-navigator-hover">
+                <button class="login-button" type="default">登录，体验完整功能</button>
+            </navigator>
+        </view>
     </template>
 </template>
-
 
 <script setup lang="ts">
     import { ref, computed } from "vue";
@@ -75,31 +78,37 @@
     })
 
     // project data.
-    const projects = ref(["通化智控鸡舍（一期）", "腾冲项目", "莱芜项目"]);
+    const projects = ref(["通化除臭塔（一期）", "腾冲项目", "莱芜项目"]);
     const selectedProject = ref(projects.value[0]); // 默认项目
 
     // 区域数据
-    const areas = ["全部区域", "西区", "中区", "东区", "区域4", "区域5", "区域6", "区域7"];
+    const areas = ["全部区域", "酸洗塔", "碱洗塔", "水洗塔", "区域x", "区域1"];
     const activeArea = ref(0); // 当前激活的标签索引
 
     // 设备数据
     const devices = ref([
-        { id: 1, name: "机器人0", location: "西区", status: "长期离线", icon: "static/logo.png" },
-        { id: 2, name: "机器人1", location: "西区", status: "长期离线", icon: "static/logo.png" },
-        { id: 3, name: "机器人2", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 4, name: "机器人3", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 5, name: "机器人4", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 6, name: "机器人5", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 7, name: "机器人6", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 8, name: "机器人7", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 9, name: "机器人8", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 10, name: "机器人9", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 11, name: "机器人10", location: "中区", status: "长期离线", icon: "static/logo.png" },
-        { id: 12, name: "机器人11", location: "中区", status: "长期离线", icon: "static/logo.png" },
-        { id: 13, name: "机器人12", location: "中区", status: "长期离线", icon: "static/logo.png" },
-        { id: 14, name: "机器人13", location: "东区", status: "长期离线", icon: "static/logo.png" },
-        { id: 15, name: "机器人14", location: "东区", status: "离线 11 天", icon: "static/logo.png" },
-        { id: 16, name: "机器人15", location: "区域4", status: "在线", icon: "static/logo.png" },
+        { id: 1, name: "搅拌机", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/stir.svg" },
+        { id: 2, name: "搅拌机", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/stir.svg" },
+        { id: 3, name: "加药泵", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/dosing.svg" },
+        { id: 4, name: "加药泵", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/dosing.svg" },
+        { id: 5, name: "PH计", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/PH.svg" },
+        { id: 6, name: "PH计", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/PH.svg" },
+        { id: 7, name: "防腐泵", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
+        { id: 8, name: "防腐泵", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
+        { id: 9, name: "防腐泵", number: 3, location: "水洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
+        { id: 10, name: "风机", number: 1, location: "区域x", status: "长期离线", icon: "static/device/fan.svg" },
+        { id: 11, name: "氨气传感器", number: 1, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
+        { id: 12, name: "氨气传感器", number: 2, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
+        { id: 13, name: "氨气传感器", number: 3, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
+        { id: 14, name: "氨气传感器", number: 4, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
+        { id: 15, name: "氨气传感器", number: 5, location: "区域x", status: "离线 11 天", icon: "static/device/NH3.svg" },
+        { id: 16, name: "氨气传感器", number: 6, location: "区域x", status: "在线", icon: "static/device/NH3.svg" },
+        { id: 17, name: "甲烷传感器", number: 1, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
+        { id: 18, name: "甲烷传感器", number: 2, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
+        { id: 19, name: "甲烷传感器", number: 3, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
+        { id: 20, name: "甲烷传感器", number: 4, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
+        { id: 21, name: "甲烷传感器", number: 5, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
+        { id: 22, name: "甲烷传感器", number: 6, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
     ]);
 
     // filter device data.
@@ -135,7 +144,7 @@
 
     const goToDevicePage = (device : { id : any; name : any; status : any; location : any; }) => {
         uni.navigateTo({
-            url: `/pages/device-detail/device-detail?id=${device.id}&name=${device.name}&status=${device.status}&location=${device.location}`,
+            url: `/pages/device/device_detail?id=${device.id}&name=${device.name}&status=${device.status}&location=${device.location}`,
         });
     };
 </script>
@@ -308,5 +317,52 @@
                 }
             }
         }
+    }
+
+    //
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px;
+    }
+
+    .company-logo {
+        height: 100px;
+        width: 100px;
+        margin: 300rpx 18% 120rpx 18%;
+    }
+
+    .login-text {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .login-button {
+        background-color: #00c853;
+        /* 绿色背景 */
+        color: white;
+        /* 白色文字 */
+        padding: 10px 20px;
+        /* 内边距 */
+        border-radius: 5px;
+        /* 圆角 */
+        font-size: 20px;
+        /* 字体大小 */
+        border: none;
+        /* 无边框 */
+        cursor: pointer;
+        /* 鼠标悬停时显示指针 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* 阴影 */
+        transition: background-color 0.3s, transform 0.3s;
+        /* 过渡效果 */
+    }
+
+    .login-button:hover {
+        background-color: #00b359;
+        /* 悬停时的背景颜色 */
+        transform: translateY(-2px);
+        /* 悬停时的上移效果 */
     }
 </style>

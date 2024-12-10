@@ -1,0 +1,211 @@
+<template>
+    <template v-if="login_status">
+        <view class="auth_layout">
+            <view>
+                <image class="auth_logo" src="/static/company_logo/s-logo.png" style="margin-bottom: 10px;" mode="heightFix"></image>
+                <view class="userinfo">
+                    <view style="margin-bottom: 5px;"> {{auth_userName}} </view>
+                    <view style="margin-bottom: 5px;"> APP版本: {{system_info.appVersion}} </view>
+                </view>
+            </view>
+            <!-- <view v-if="auth_userName.includes('admin')" class="jump_url" v-for="(item,index) in papges_url"
+                :key='item.id'>
+                <navigator :url="item.url">{{item.title}} </navigator>
+            </view> -->
+            <view class="navi-container">
+                <navigator url="/pages/device/device_manage" open-type="switchTab" hover-class="other-navigator-hover"
+                    class="navigator-button">
+                    <button class="login-button" type="default">设备管理</button>
+                </navigator>
+                <navigator url="/pages/area/area_manage" open-type="switchTab" hover-class="other-navigator-hover"
+                    class="navigator-button">
+                    <button class="login-button" type="default">区域管理</button>
+                </navigator>
+                <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
+                <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
+                <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>
+            </view>
+            <view v-if="auth_userName.includes('admin')">{{system_info}}</view>
+        </view>
+    </template>
+    <template v-else>
+        <!-- Logo -->
+        <image class="auth_logo" src="@/static/company_logo/s-logo.png" mode="heightFix"></image>
+        <view class="auth_input">
+            <view class="title">用户名</view>
+            <input class="user" type="text" v-model="auth_userName" placeholder="手机号码/用户ID" maxlength="15" />
+            <view class="title">密码</view>
+            <input class="password" v-model="auth_password" type="password" placeholder="密码" password="" maxlength="10"
+                confirm-type="done" @confirm="login" />
+        </view>
+
+        <!-- 协议勾选框 -->
+        <view class="agreement">
+            <checkbox-group @change="checkboxChange">
+                <checkbox value="true" checked="true" />已阅读并同意绿如蓝账号
+            </checkbox-group>
+            <navigator url="/pages/agreement/agreement" class="agreement-link">用户协议</navigator>
+            <navigator url="/pages/privacy/privacy" class="agreement-link">隐私政策</navigator>
+        </view>
+        <view class="auth_input">
+            <button size="default" type="primary" @click="login" :disabled="!(auth_password.length >= 3)">登录</button>
+        </view>
+
+        <!-- 链接导航 -->
+        <view class="links">
+            <navigator url="/pages/forgot-password/forgot-password">忘记密码</navigator>
+        </view>
+    </template>
+</template>
+
+<script setup lang="ts">
+    import { ref } from 'vue';
+    import { login_status, func_login } from "@/common/mutual/auth.ts"
+
+    const system_info = uni.getSystemInfoSync();
+    console.log(system_info)
+
+    // 用户输入的数据
+    const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
+    const auth_password = ref<string>(uni.getStorageSync('auth_password'));
+    const agreed = ref(true); // 用户是否同意协议
+
+    // 登录逻辑
+    const login = () => {
+        if (false == agreed.value) {
+            uni.showToast({
+                title: '请同意用户协议和隐私政策',
+                icon: 'none',
+            });
+            return;
+        }
+        if (!auth_userName.value || !auth_password.value) {
+            uni.showToast({
+                title: '请输入用户名和密码',
+                icon: 'none',
+            });
+            return;
+        }
+
+        // login.
+        func_login(auth_userName, auth_password);
+    };
+
+    function checkUpdate() {
+        uni.showToast({
+            title: '您使用的已是最新版本',
+            icon: "none",
+            mask: true,
+            duration: 1000
+        });
+    }
+
+    function signOut() {
+        login_status.value = false;
+    }
+
+    function clearTotalData() {
+        uni.clearStorage();
+        uni.showToast({
+            title: '缓存数据已清空',
+            icon: 'success',
+            mask: true,
+            duration: 2000
+        })
+        agreed.value = false;
+    }
+
+    function checkboxChange(e : { detail : { value : boolean; }; }) {
+        // console.log(e.detail.value)
+        agreed.value = e.detail.value;
+    }
+</script>
+
+<style lang="scss" scoped>
+    .auth_layout {
+        background-size: cover;
+        overflow-y: scroll;
+        background-color: #dbf8f8;
+        width: 100vw;
+        height: 100vh;
+        /* background-image: url("/static/img/bg/bg.png"); */
+        // background-image: url("https://app.lvrulanbio.com/img/bg/bg.png");
+    }
+    
+    /* 整个页面的容器 */
+    .auth_logo {
+        height: 100px;
+        width: 100px;
+        margin: 300rpx 18% 120rpx 18%;
+    }
+
+    .auth_input {
+        font-size: 30rpx;
+        margin: 20px 10% 20rpx 10%;
+
+        .title {
+            font-size: 40rpx;
+            margin: 20px 0 20rpx 0;
+        }
+
+        .user {
+            height: 80rpx;
+            border: 1px solid #ccc;
+        }
+
+        .password {
+            height: 80rpx;
+            border: 1px solid #ccc;
+        }
+
+        .text {
+            margin-bottom: 5rpx;
+            /* 控制行间距 */
+        }
+    }
+
+    .agreement {
+        font-size: 18rpx;
+        color: #888;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 20rpx;
+    }
+
+    .agreement-link {
+        color: #007AFF;
+        margin-left: 2rpx;
+    }
+
+    //
+    .userinfo {
+        width: 100%;
+        height: 200rpx;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-image {
+        border-radius: 50%;
+        height: 200rpx;
+        width: 200rpx;
+        object-fit: cover;
+    }
+
+    .navi-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10rpx;
+    }
+
+    .navigator-button {
+        width: 90%;
+        /* 根据需要调整宽度 */
+        margin-bottom: 20px;
+        /* 为每个按钮添加底部外边距 */
+    }
+</style>
