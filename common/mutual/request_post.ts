@@ -7,7 +7,7 @@ export function request_auth(data : { username : string; password : string; }, c
     request_post(login_post_url, header, data, callback);
 }
 
-export function request_post_simu_ws(data : any, callback : (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
+export function request_post_simu_ws(post_url, data : any, callback : (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
     let header = {
         'Content-Type': 'application/json',
     };
@@ -18,7 +18,7 @@ export function request_post_simu_ws(data : any, callback : (arg0 : UniApp.Reque
     } else {
         ;
     }
-    request_post(data_post_url, header, data, callback);
+    request_post(data_post_url + post_url, header, data, callback);
 }
 
 function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback : (arg0 : UniApp.RequestSuccessCallbackResult) => void) {

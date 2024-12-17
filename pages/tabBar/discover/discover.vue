@@ -1,104 +1,32 @@
 <template>
-	<div>
-		<video id='video1' class="video" :src="src" autoplay="false" duration="" controls="true" :danmu-list="list"
-			danmu-btn="true" enable-danmu="true" :loop="true" muted="true" initial-time="" direction="-90"
-			show-mute-btn="true" @play="onstart" @pause="onpause" @ended="onfinish" @error="onfail" @waiting="waiting"
-			@timeupdate="timeupdate" @fullscreenchange="fullscreenchange"></video>
-		<button class="btn" @click="play">播放</button>
-		<button class="btn" @click="pause">暂停</button>
-		<button class="btn" @click="seek">跳转到指定位置</button>
-		<button class="btn" @click="stop">停止</button>
-		<button class="btn" @click="fullScreen">全屏</button>
-		<button class="btn" @click="exitFullScreen">退出全屏</button>
-		<button class="btn" @click="playbackRate">设置倍速</button>
-		<button class="btn" @click="sendDanmu">发送弹幕</button>
-	</div>
+	<view>
+		<web-view :src="url" @message="getMessage"></web-view>
+	</view>
 </template>
 
 <script>
 	export default {
 		data() {
 			return {
-				src: "https://aimg8.dlssyht.cn/u/2219650/wap/mp4/1110/645aedbca35475.68991243.mp4",
-				fil: true,
-				list: [{
-					text: '要显示的文本',
-					color: '#FF0000',
-					time: 9
-				}]
+				url: 'http://www.lvrulanbio.com'
 			}
 		},
-		onReady() {
-			this.context = uni.createVideoContext("video1", this);
+		onLoad(options) {
+			if (options && options.url) {
+				this.url = options.url;
+			}
 		},
 		methods: {
-			onstart(e) {
-				console.log("onstart:" + JSON.stringify(e));
-			},
-			onpause(e) {
-				console.log("onpause:" + JSON.stringify(e));
-			},
-			onfinish(e) {
-				console.log("onfinish:" + JSON.stringify(e));
-			},
-			onfail(e) {
-				console.log("onfail:" + JSON.stringify(e));
-			},
-			fullscreenchange(e) {
-				console.log("fullscreenchange:" + JSON.stringify(e));
-			},
-			waiting(e) {
-				console.log("waiting:" + JSON.stringify(e));
-			},
-			timeupdate(e) {
-				console.log("timeupdate:" + JSON.stringify(e));
-			},
-
-			play() {
-				this.context.play();
-			},
-			pause() {
-				this.context.pause();
-			},
-			seek() {
-				this.context.seek(20);
-			},
-			stop() {
-				this.context.stop();
-			},
-			fullScreen() {
-				this.context.requestFullScreen({
-					direction: 90
+			getMessage(event) {
+				uni.showModal({
+					content: JSON.stringify(event.detail),
+					showCancel: false
 				});
-			},
-			exitFullScreen() {
-				this.context.exitFullScreen();
-			},
-			sendDanmu() {
-				this.context.sendDanmu({
-					text: '要显示的弹幕文本',
-					color: '#FF0000'
-				});
-			},
-			playbackRate() {
-				this.context.playbackRate(2);
 			}
 		}
 	}
 </script>
 
 <style>
-	.video {
-		width: 750rpx;
-		/* #ifdef H5 */
-		width: 100%;
-		/* #endif */
-		height: 400rpx;
-		background-color: #808080;
-	}
 
-	.btn {
-		margin-top: 5px;
-		margin-bottom: 5px;
-	}
 </style>

@@ -1,27 +1,27 @@
 <template>
-    <template v-if="login_status">
+    <template v-if="login_status && all_areas && all_devices">
         <div class="app">
             <!-- 项目 -->
-            <div class="location">
+            <div class="area">
                 <div class="project" @click="toggleDropdown">
-                    {{ selectedProject }}
+                    {{ selectedProject}}
                     <i class="icon-dropdown">▼</i>
                 </div>
                 <div v-if="showDropdown" class="dropdown-menu">
-                    <div v-for="(project, index) in projects" :key="index" class="dropdown-item"
+                    <div v-for="(project, index) in all_projects" :key="index" class="dropdown-item"
                         @click="selectProject(project)">
-                        {{ project }}
+                        {{ project[1] }}
                     </div>
                 </div>
             </div>
 
             <div class="container">
-                <!-- 标签选择 -->
+                <!-- 区域选择 -->
                 <div class="tabs-wrapper">
                     <div class="areas" ref="tabsContainer">
-                        <span v-for="(area, index) in areas" :key="index"
+                        <span v-for="(area, index) in all_areas" :key="index"
                             :class="['area', { active: activeArea === index }]" @click="selectArea(index)">
-                            {{ area }}
+                            {{ area[1] }}
                         </span>
                     </div>
                     <div class="dropdown-icon" @click="toggleTabDropdown">
@@ -29,13 +29,12 @@
                         </image>
                     </div>
                     <div v-if="showTabDropdown" class="tabs-dropdown-menu" @click.stop>
-                        <div v-for="(area, index) in areas" :key="index" class="dropdown-item"
+                        <div v-for="(area, index) in all_areas" :key="index" class="dropdown-item"
                             @click="selectArea(index)">
-                            {{ area }}
+                            {{ area[1] }}
                         </div>
                     </div>
                 </div>
-
                 <!-- 设备卡片区域 -->
                 <div class="device-cards">
                     <div v-if="filteredDevices.length === 0" class="no-devices">
@@ -43,10 +42,10 @@
                     </div>
                     <div v-else v-for="(device, index) in filteredDevices" :key="index" class="device-card"
                         @click="goToDevicePage(device)">
-                        <img :src="device.icon" alt="device-icon" class="device-icon" />
+                        <img :src="getDeviceIconUrl(device[1])" alt="暂无图标" class="device-icon" />
                         <div class="device-info">
-                            <div class="device-title">{{ device.name }}{{ device.number }}</div>
-                            <div class="device-details">{{ device.location }} | {{ device.status }}</div>
+                            <div class="device-title">{{ device[1] }}{{ device[2] }}</div>
+                            <div class="device-details">{{ all_areas[device[3]][1] }} | {{ "长期离线" }}</div>
                         </div>
                     </div>
                 </div>
@@ -65,62 +64,100 @@
 
 <script setup lang="ts">
     import { ref, computed } from "vue";
-    import { onLoad } from '@dcloudio/uni-app'
-    import { login_status, func_login } from "@/common/mutual/auth.ts"
+    import { onLoad, onShow } from '@dcloudio/uni-app'
+    import { login_status } from "@/common/mutual/auth.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
 
     const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
     const auth_password = ref<string>(uni.getStorageSync('auth_password'));
 
+    // project data.
+    let all_projects = ref([
+        { "1": "项目1" },
+        { "2": "项目2" }
+    ]);
+    let selectedProject = ref(all_projects.value[0][0]);
+
+    let all_areas = ref(null);
+    let all_devices = ref(null);
+
     onLoad(() => {
-        if (false == login_status.value && auth_userName.value && auth_password.value) {
-            func_login(auth_userName, auth_password);
+        ;
+    })
+
+    // 定义设备图标类型
+    type DeviceIcons = {
+        [key : string] : string;
+    };
+
+    // 定义设备图标对象
+    const deviceIcons : DeviceIcons = {
+        "搅拌机": 'static/device/stir.svg',
+        "加药泵": 'static/device/dosing.svg',
+        "防腐泵": 'static/device/waterPump.svg',
+        "风机": 'static/device/fan.svg',
+        "PH计": 'static/device/PH.svg',
+        "氨气传感器": 'static/device/NH3.svg',
+        "甲烷传感器": 'static/device/CH4.svg',
+    };
+
+    function getDeviceIconUrl(device_name : string) {
+        console.log(device_name)
+        // 如果 device Icons 对象中存在 device_name，则返回对应的 URL，否则返回默认图标
+        return deviceIcons[device_name] || '/static/img/icon_device/device_default.png';
+    }
+
+    onShow(() => {
+        if (login_status.value) {
+            uni.showToast({
+                title: '数据获取中',
+                icon: 'loading',
+                mask: true,
+                duration: 2000
+            })
+            request_post_simu_ws("getProject", { command: "all_projects" }, handleMessage_projects);
+            request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
+            request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
         }
     })
 
-    // project data.
-    const projects = ref(["通化除臭塔（一期）", "腾冲项目", "莱芜项目"]);
-    const selectedProject = ref(projects.value[0]); // 默认项目
+    function handleMessage_projects(res : { data : any; }) {
+        all_projects.value = res.data;
+        selectProject(all_projects.value[0]);
+        console.log('Received WebSocket message:', res);
+        uni.hideToast();
+    }
+
+    function handleMessage_areas(res : { data : any; }) {
+        all_areas.value = res.data;
+        console.log('Received WebSocket message:', res);
+        all_areas.value.unshift([0, "全部区域"]);
+        uni.hideToast();
+    }
+
+    function handleMessage_devices(res : { data : any; }) {
+        all_devices.value = res.data;
+        console.log('Received WebSocket message:', res);
+        uni.hideToast();
+    }
 
     // 区域数据
-    const areas = ["全部区域", "酸洗塔", "碱洗塔", "水洗塔", "区域x", "区域1"];
     const activeArea = ref(0); // 当前激活的标签索引
-
-    // 设备数据
-    const devices = ref([
-        { id: 1, name: "搅拌机", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/stir.svg" },
-        { id: 2, name: "搅拌机", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/stir.svg" },
-        { id: 3, name: "加药泵", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/dosing.svg" },
-        { id: 4, name: "加药泵", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/dosing.svg" },
-        { id: 5, name: "PH计", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/PH.svg" },
-        { id: 6, name: "PH计", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/PH.svg" },
-        { id: 7, name: "防腐泵", number: 1, location: "酸洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
-        { id: 8, name: "防腐泵", number: 2, location: "碱洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
-        { id: 9, name: "防腐泵", number: 3, location: "水洗塔", status: "长期离线", icon: "static/device/waterPump.svg" },
-        { id: 10, name: "风机", number: 1, location: "区域x", status: "长期离线", icon: "static/device/fan.svg" },
-        { id: 11, name: "氨气传感器", number: 1, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
-        { id: 12, name: "氨气传感器", number: 2, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
-        { id: 13, name: "氨气传感器", number: 3, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
-        { id: 14, name: "氨气传感器", number: 4, location: "区域x", status: "长期离线", icon: "static/device/NH3.svg" },
-        { id: 15, name: "氨气传感器", number: 5, location: "区域x", status: "离线 11 天", icon: "static/device/NH3.svg" },
-        { id: 16, name: "氨气传感器", number: 6, location: "区域x", status: "在线", icon: "static/device/NH3.svg" },
-        { id: 17, name: "甲烷传感器", number: 1, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-        { id: 18, name: "甲烷传感器", number: 2, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-        { id: 19, name: "甲烷传感器", number: 3, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-        { id: 20, name: "甲烷传感器", number: 4, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-        { id: 21, name: "甲烷传感器", number: 5, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-        { id: 22, name: "甲烷传感器", number: 6, location: "区域x", status: "在线", icon: "static/device/CH4.svg" },
-    ]);
 
     // filter device data.
     const filteredDevices = computed(() => {
+        if (!Array.isArray(all_devices.value)) {
+            return []; // 如果 all_devices 不是数组，返回空数组
+        }
         if (activeArea.value === 0) {
-            return devices.value; // all areas, display all devices.
+            // 如果选择了“全部区域”，返回所有设备
+            return all_devices.value;
         } else {
-            return devices.value.filter(
-                (device) => device.location === areas[activeArea.value]
-            );
+            // 否则，过滤设备，返回匹配当前区域ID的设备
+            return all_devices.value.filter(device => device[3] === activeArea.value);
         }
     });
+
 
     // switch area.
     const selectArea = (index : number) => {
@@ -131,8 +168,8 @@
     // switch project drop-down menu logic.
     const showDropdown = ref(false);
     const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
-    const selectProject = (location : string) => {
-        selectedProject.value = location;
+    const selectProject = (area: unknown) => {
+        selectedProject.value = area[1];
         showDropdown.value = false;
     };
 
@@ -142,9 +179,9 @@
         showTabDropdown.value = !showTabDropdown.value;
     };
 
-    const goToDevicePage = (device : { id : any; name : any; status : any; location : any; }) => {
+    const goToDevicePage = (device : { id : any; name : any; status : any; area : any; }) => {
         uni.navigateTo({
-            url: `/pages/device/device_detail?id=${device.id}&name=${device.name}&status=${device.status}&location=${device.location}`,
+            url: `/pages/device/device_detail?id=${device.id}&name=${device.name}&status=${device.status}&area=${device.area}`,
         });
     };
 </script>
@@ -157,7 +194,7 @@
         background-color: #f5f5f5;
         padding: 16px;
 
-        .location {
+        .area {
             position: relative;
             margin-bottom: 16px;
 
