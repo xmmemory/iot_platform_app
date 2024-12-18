@@ -7,7 +7,7 @@ export function request_auth(data : { username : string; password : string; }, c
     request_post(login_post_url, header, data, callback);
 }
 
-export function request_post_simu_ws(post_url, data : any, callback : (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
+export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
     let header = {
         'Content-Type': 'application/json',
     };
@@ -21,7 +21,7 @@ export function request_post_simu_ws(post_url, data : any, callback : (arg0 : Un
     request_post(data_post_url + post_url, header, data, callback);
 }
 
-function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback : (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
+function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
     uni.request({
         url: url,
         method: 'POST',
@@ -31,7 +31,10 @@ function request_post(url : string, header : { "Content-Type" : string; }, data 
         enableCookie: true,
         data: data,
         success: (res) => {
-            callback(res);
+            // 如果 callback 存在，则调用它
+            if (callback) {
+                callback(res);
+            }
         },
         fail: (res) => {
             console.log(res);

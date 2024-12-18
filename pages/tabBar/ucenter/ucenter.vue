@@ -14,14 +14,20 @@
                 <navigator :url="item.url">{{item.title}} </navigator>
             </view> -->
             <view class="navi-container">
-                <navigator url="/pages/manage/device_manage" open-type="navigate" hover-class="other-navigator-hover"
+                <navigator url="/pages/manage/manage_devices" open-type="navigate" hover-class="other-navigator-hover"
                     class="navigator-button">
                     <button class="login-button" type="default">设备管理</button>
                 </navigator>
-                <navigator url="/pages/manage/area_manage" open-type="navigate" hover-class="other-navigator-hover"
+                <navigator url="/pages/manage/manage_areas" open-type="navigate" hover-class="other-navigator-hover"
                     class="navigator-button">
                     <button class="login-button" type="default">区域管理</button>
                 </navigator>
+                
+                <navigator url="/pages/manage/popup" open-type="navigate" hover-class="other-navigator-hover"
+                    class="navigator-button">
+                    <button class="login-button" type="default">pop</button>
+                </navigator>
+                
                 <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
                 <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
                 <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>

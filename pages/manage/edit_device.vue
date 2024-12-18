@@ -15,7 +15,8 @@
                         <uni-data-checkbox v-model="baseFormData.area_id" :localdata="all_areas" />
                     </uni-forms-item>
                 </uni-forms>
-                <button type="primary" @click="submit(baseFormData)">提交</button>
+                <button type="primary" @click="submit(baseFormData)"
+                    :disabled="!(baseFormData.device_name) || !(baseFormData.device_num)">提交</button>
             </view>
         </uni-section>
     </view>

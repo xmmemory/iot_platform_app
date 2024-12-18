@@ -45,7 +45,9 @@
                         <img :src="getDeviceIconUrl(device[1])" alt="暂无图标" class="device-icon" />
                         <div class="device-info">
                             <div class="device-title">{{ device[1] }}{{ device[2] }}</div>
-                            <div class="device-details">{{ all_areas[device[3]][1] }} | {{ "长期离线" }}</div>
+                            <div class="device-details">{{ all_areas.find(area => area[0] === device[3])?.[1] }} |
+                                {{ "离线" }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,17 +94,17 @@
 
     // 定义设备图标对象
     const deviceIcons : DeviceIcons = {
-        "搅拌机": 'static/device/stir.svg',
-        "加药泵": 'static/device/dosing.svg',
-        "防腐泵": 'static/device/waterPump.svg',
-        "风机": 'static/device/fan.svg',
-        "PH计": 'static/device/PH.svg',
-        "氨气传感器": 'static/device/NH3.svg',
-        "甲烷传感器": 'static/device/CH4.svg',
+        "搅拌机": '/static/device/stir.svg',
+        "加药泵": '/static/device/dosing.svg',
+        "防腐泵": '/static/device/waterPump.svg',
+        "风机": '/static/device/fan.svg',
+        "PH计": '/static/device/PH.svg',
+        "氨气传感器": '/static/device/NH3.svg',
+        "甲烷传感器": '/static/device/CH4.svg',
     };
 
     function getDeviceIconUrl(device_name : string) {
-        console.log(device_name)
+        // console.log(device_name)
         // 如果 device Icons 对象中存在 device_name，则返回对应的 URL，否则返回默认图标
         return deviceIcons[device_name] || '/static/img/icon_device/device_default.png';
     }
@@ -116,8 +118,6 @@
                 duration: 2000
             })
             request_post_simu_ws("getProject", { command: "all_projects" }, handleMessage_projects);
-            request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
-            request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
         }
     })
 
@@ -125,14 +125,14 @@
         all_projects.value = res.data;
         selectProject(all_projects.value[0]);
         console.log('Received WebSocket message:', res);
-        uni.hideToast();
+        request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
     }
 
     function handleMessage_areas(res : { data : any; }) {
         all_areas.value = res.data;
         console.log('Received WebSocket message:', res);
         all_areas.value.unshift([0, "全部区域"]);
-        uni.hideToast();
+        request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
     }
 
     function handleMessage_devices(res : { data : any; }) {
@@ -168,7 +168,7 @@
     // switch project drop-down menu logic.
     const showDropdown = ref(false);
     const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
-    const selectProject = (area: unknown) => {
+    const selectProject = (area : unknown) => {
         selectedProject.value = area[1];
         showDropdown.value = false;
     };
@@ -179,9 +179,11 @@
         showTabDropdown.value = !showTabDropdown.value;
     };
 
-    const goToDevicePage = (device : { id : any; name : any; status : any; area : any; }) => {
+    all_areas
+
+    const goToDevicePage = (device : { id : any; device_name : any; status : any; area : any; }) => {
         uni.navigateTo({
-            url: `/pages/device/device_detail?id=${device.id}&name=${device.name}&status=${device.status}&area=${device.area}`,
+            url: `/pages/device/device_detail?id=${device[0]}&name=${device[1] + device[2]}&area=${all_areas.value.find(area => area[0] === device[3])?.[1]}`,
         });
     };
 </script>
@@ -348,7 +350,7 @@
                     }
 
                     .device-details {
-                        font-size: 14px;
+                        font-size: 16px;
                         color: #666;
                     }
                 }

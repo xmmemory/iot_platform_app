@@ -1389,13 +1389,36 @@
         {
             "root": "pages/manage",
             "pages": [{
-                    "path": "area_manage"
+                    "path": "manage_areas",
+                    "style": {
+                        "navigationBarTitleText": "区域管理"
+                    }
+                }, {
+                    "path": "manage_devices",
+                    "style": {
+                        "navigationBarTitleText": "设备管理"
+                    }
+                }, {
+                    "path": "manage_vars",
+                    "style": {
+                        "navigationBarTitleText": "变量管理"
+                    }
+                }, {
+                    "path": "edit_device",
+                    "style": {
+                        "navigationBarTitleText": "设备编辑"
+                    }
+                }, {
+                    "path": "edit_var",
+                    "style": {
+                        "navigationBarTitleText": "变量编辑"
+                    }
                 },
                 {
-                    "path": "device_manage"
-                },
-                {
-                    "path": "new_device"
+                    "path": "popup",
+                    "style": {
+                        "navigationBarTitleText": "popup"
+                    }
                 }
             ]
         }
@@ -1438,7 +1461,8 @@
                 "iconPath": "static/tabbar/me.png",
                 "selectedIconPath": "static/tabbar/me_active.png",
                 "text": "用户中心"
-            }, {
+            }
+            , {
                 "pagePath": "pages/tabBar/extUI/extUI",
                 "iconPath": "static/extui.png",
                 "selectedIconPath": "static/extuiHL.png",
