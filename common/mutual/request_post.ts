@@ -1,13 +1,13 @@
 import { login_post_url, data_post_url } from "./server_parameter.ts"
 
-export function request_auth(data : { username : string; password : string; }, callback) {
+export function request_auth(data : { username : string; password : string; }, callback: { (res: { statusCode: string | number; data: any; }): void; (arg0: any): void; }) {
     let header = {
         'Content-Type': 'application/json',
     };
     request_post(login_post_url, header, data, callback);
 }
 
-export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
+export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0: any) => void) {
     let header = {
         'Content-Type': 'application/json',
     };
@@ -21,7 +21,7 @@ export function request_post_simu_ws(post_url : string, data : any, callback ?: 
     request_post(data_post_url + post_url, header, data, callback);
 }
 
-function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : UniApp.RequestSuccessCallbackResult) => void) {
+function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : any) => void) {
     uni.request({
         url: url,
         method: 'POST',

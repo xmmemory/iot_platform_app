@@ -54,7 +54,7 @@
 
     // 获取页面参数并设置标题
     onLoad((options) => {
-        console.log(options)
+        // console.log(options)
         devicd_id.value = options.device_id || null;
         if (options.var_id) {
             var_id.value = options.var_id || null;
@@ -62,29 +62,40 @@
             uni.setNavigationBarTitle({
                 title: " 变量编辑 --- " + options.name,
             });
-            request_post_simu_ws("getVar", { command: "filter_var_id", var_id: var_id.value }, handleMessage_res);
+            request_post_simu_ws("getVar", { command: "filter_var_id", var_id: var_id.value }, handleMessage_var);
         }
         else {
-            console.log("新建变量")
             uni.setNavigationBarTitle({
                 title: "新建变量",
             });
         }
     })
 
-    function handleMessage_res(res : { data : any; }) {
-        const data = res.data[0];  // 获取第一个子数组
-        moment_var.value.var_name = data[1];
-        moment_var.value.var_code = data[2];
-        moment_var.value.var_type = data[3];
-        moment_var.value.var_permission = data[4];
-        console.log('Received WebSocket moment_var.value:', moment_var.value);
-        uni.hideToast();
+    function handleMessage_var(res : { data : any; }) {
+        moment_var.value = res.data[0];
+        // console.log('Received msg moment_var:', moment_var);
     }
 
-    function handleMessage_insertVar(res : { data : any; }) {
-        console.log('Received WebSocket moment_var.value:', res.data);
-        uni.hideToast();
+    function handleMessage_modifyRes(res : { statusCode : number; data : string; }) {
+        var _title : string, _icon : string;
+        if (200 == res.statusCode) {
+            _title = "提交完成";
+            _icon = 'success';
+        }
+        else {
+            _title = res.data;
+            _icon = 'error';
+        }
+        uni.showToast({
+            title: _title,
+            icon: _icon,
+            mask: true,
+            duration: 1000
+        });
+        uni.navigateBack({
+            delta: 1
+        });
+        // console.log('Received msg moment_var.value:', res.data);
     }
 
     const code_type = reactive([
@@ -109,7 +120,7 @@
                 var_type: item.var_type,
                 var_permission: item.var_permission,
                 device_id: devicd_id.value,
-            }, handleMessage_insertVar);
+            }, handleMessage_modifyRes);
         }
         else {
             request_post_simu_ws("modifyVar", {
@@ -119,7 +130,7 @@
                 var_type: item.var_type,
                 var_permission: item.var_permission,
                 device_id: devicd_id.value,
-            }, handleMessage_insertVar);
+            }, handleMessage_modifyRes);
         }
     };
 </script>

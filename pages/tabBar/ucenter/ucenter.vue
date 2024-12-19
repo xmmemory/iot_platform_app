@@ -22,12 +22,12 @@
                     class="navigator-button">
                     <button class="login-button" type="default">区域管理</button>
                 </navigator>
-                
+
                 <navigator url="/pages/manage/popup" open-type="navigate" hover-class="other-navigator-hover"
                     class="navigator-button">
                     <button class="login-button" type="default">pop</button>
                 </navigator>
-                
+
                 <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
                 <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
                 <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>
@@ -36,32 +36,34 @@
         </view>
     </template>
     <template v-else>
-        <!-- Logo -->
-        <image class="auth_logo" src="@/static/company_logo/s-logo.png" mode="heightFix"></image>
-        <view class="auth_input">
-            <view class="title">用户名</view>
-            <input class="user" type="text" v-model="auth_userName" placeholder="手机号码/用户ID" maxlength="15" />
-            <view class="title">密码</view>
-            <input class="password" v-model="auth_password" type="password" placeholder="密码" password="" maxlength="15"
-                confirm-type="done" @confirm="login" />
-        </view>
+        <view class="uni-container">
+            <!-- Logo -->
+            <image class="auth_logo" src="@/static/company_logo/s-logo.png" mode="heightFix"></image>
+            <view class="auth_input">
+                <view class="title">用户名</view>
+                <input class="user" type="text" v-model="auth_userName" placeholder="手机号码/用户ID" maxlength="15" />
+                <view class="title">密码</view>
+                <input class="password" v-model="auth_password" type="password" placeholder="密码" password=""
+                    maxlength="15" confirm-type="done" @confirm="login" />
+            </view>
 
-        <!-- 协议勾选框 -->
-        <view class="uni-flex uni-row uni-center" style="justify-content: center; align-items: center;">
-            <view class="text">登录即表示同意绿如蓝账号</view>
-            <navigator url="/pages/agreement/agreement" class="agreement-link">用户服务协议</navigator>
-            <view class="text" style="width: 30rpx;">和</view>
-            <navigator url="/pages/privacy/privacy" class="agreement-link">隐私政策</navigator>
-        </view>
+            <!-- 协议勾选框 -->
+            <view class="uni-flex uni-row uni-center" style="justify-content: center; align-items: center;">
+                <view class="text">登录即表示同意绿如蓝账号</view>
+                <navigator url="/pages/agreement/agreement" class="agreement-link">用户服务协议</navigator>
+                <view class="text" style="width: 30rpx;">和</view>
+                <navigator url="/pages/privacy/privacy" class="agreement-link">隐私政策</navigator>
+            </view>
 
-        <view class="auth_input">
-            <button size="default" type="primary" @click="login"
-                :disabled="!(auth_password.length >= 3) && !(auth_userName.length >= 3)">登录</button>
-        </view>
+            <view class="auth_input">
+                <button size="default" type="primary" @click="login"
+                    :disabled="!(auth_password.length >= 3) && !(auth_userName.length >= 3)">登录</button>
+            </view>
 
-        <!-- 链接导航 -->
-        <view class="links uni-center">
-            <navigator url="/pages/forgot-password/forgot-password">忘记密码</navigator>
+            <!-- 链接导航 -->
+            <view class="links uni-center">
+                <navigator url="/pages/forgot-password/forgot-password">忘记密码</navigator>
+            </view>
         </view>
     </template>
 </template>
@@ -71,11 +73,8 @@
     import { login_status, func_login } from "@/common/mutual/auth.ts"
     import { onLoad } from '@dcloudio/uni-app'
 
-    // TODO (delete).
-    // login_status.value = true;
-
     const system_info = uni.getSystemInfoSync();
-    console.log(system_info)
+    // console.log(system_info)
     // 用户输入的数据
     const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
     const auth_password = ref<string>(uni.getStorageSync('auth_password'));
@@ -126,10 +125,7 @@
 <style lang="scss" scoped>
     .auth_layout {
         background-size: cover;
-        overflow-y: scroll;
         background-color: #dbf8f8;
-        width: 100vw;
-        height: 100vh;
         /* background-image: url("/static/img/bg/bg.png"); */
         // background-image: url("https://app.lvrulanbio.com/img/bg/bg.png");
     }

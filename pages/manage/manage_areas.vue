@@ -95,17 +95,14 @@
     };
 
     function handleMessage_areas(res : { data : any[][]; }) {
-        console.log('all_areas data:', res.data);
-        // 将 WebSocket 数据转换为所需格式
-        all_areas.splice(0, all_areas.length, ...res.data
-            .map((item : any[]) => ({
-                id: item[0],         // 将 ID 赋值给 id
-                content: item[1],    // 将名称赋值给 content
-                options: [
-                    // { text: '编辑' },
-                    { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
-                ]
-            })))
+        all_areas.splice(0, all_areas.length, ...res.data.map((item) => ({
+            id: item.area_id,
+            content: item.area_name,
+            options: [
+                // { text: '编辑' },
+                { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
+            ]
+        })))
         console.log('all_areas data:', all_areas);
     }
 

@@ -1,10 +1,11 @@
 <template>
     <view class="container">
-        <template v-for="(item, index) in device_vars" :key="item[0]">
-            <uni-card :title=" item[1]" sub-title="deviceArea" :extra="deviceArea" :thumbnail="avatar" @click="onClick">
+        <template v-for="(item, index) in device_vars" :key="item.var_id">
+            <uni-card :title=" item.var_name" sub-title="deviceArea" :extra="deviceArea" :thumbnail="avatar"
+                @click="onClick">
                 <template v-slot:title>
                     <uni-list>
-                        <uni-list-item :show-switch="true" :title="item[1]" />
+                        <uni-list-item :show-switch=" true" :title="item.var_name" />
                     </uni-list>
                 </template>
                 <!-- <text class="uni-body">这是一个带头像和双标题的基础卡片，此示例展示了一个完整的卡片。</text>
@@ -49,10 +50,10 @@
                 title: deviceName.value + " | " + deviceStatus.value,
             });
         }
-        request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_devices);
+        request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
     });
 
-    function handleMessage_devices(res : { data : any; }) {
+    function handleMessage_vars(res : { data : any; }) {
         device_vars.value = res.data;
         console.log('Received WebSocket message:', res);
         uni.hideToast();

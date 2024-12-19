@@ -122,22 +122,22 @@
     })
 
     function handleMessage_projects(res : { data : any; }) {
-        all_projects.value = res.data;
+        all_projects.value = res.data.map(item => [item.project_id, item.project_name]);
         selectProject(all_projects.value[0]);
-        console.log('Received WebSocket message:', res);
+        // console.log('Received msg all_projects:', all_projects);
         request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
     }
 
     function handleMessage_areas(res : { data : any; }) {
-        all_areas.value = res.data;
-        console.log('Received WebSocket message:', res);
+        all_areas.value = res.data.map(item => [item.area_id, item.area_name]);
         all_areas.value.unshift([0, "全部区域"]);
+        // console.log('Received msg all_areas:', all_areas);
         request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
     }
 
     function handleMessage_devices(res : { data : any; }) {
-        all_devices.value = res.data;
-        console.log('Received WebSocket message:', res);
+        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_num, item.area_id]);
+        // console.log('Received msg all_devices:', all_devices);
         uni.hideToast();
     }
 

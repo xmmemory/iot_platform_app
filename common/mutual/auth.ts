@@ -13,7 +13,7 @@ function auth_confirm(res : { statusCode : string | number; data : any; }) {
         });
         uni.setStorageSync('cookie', res.data);
         login_status.value = true;
-        console.log("login succeed.")
+        console.log("login succeed, cookie:",  res.data)
     } else {
         uni.showToast({
             title: res.data,
@@ -28,7 +28,7 @@ function auth_confirm(res : { statusCode : string | number; data : any; }) {
 }
 
 export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }) {
-    console.log("login...")
+    // console.log("login...")
     uni.showToast({
         title: '用户名密码验证',
         icon: 'loading',

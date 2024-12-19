@@ -49,9 +49,8 @@
     });
 
     function handleMessage_devices(res : { data : any; }) {
-        all_devices.value = res.data;
-        console.log('Received WebSocket message:', res);
-        uni.hideToast();
+        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_num, item.area_id]);
+        // console.log('Received msg all_devices:', all_devices);
     }
 
     // 初始化数据
@@ -62,7 +61,7 @@
 
     function device_edit(id, name) {
         uni.navigateTo({
-            url: `/pages/manage/edit_device?id=${id}&name=${name}`,
+            url: `/pages/manage/edit_device?device_id=${id}&name=${name}`,
         });
     }
 
@@ -73,7 +72,40 @@
     }
 
     function device_del(id, name) {
-        console.log(e);;
+        uni.showModal({
+            title: '提示',
+            content: '是否删除',
+            success: (res) => {
+                if (res.confirm) {
+                    request_post_simu_ws("modifyDevice", {
+                        command: "del_device",
+                        device_id: id,
+                    }, handleMessage_delDevice);
+                    console.log("[del device] id:", id, "name:", name);
+                } else if (res.cancel) {
+                    console.log('用户点击取消');
+                }
+            }
+        });
+    }
+    
+    function handleMessage_delDevice(res : { statusCode : number; data : string; }) {
+        var _title : string, _icon : string;
+        if (200 == res.statusCode) {
+            _title = "删除成功";
+            _icon = 'success';
+        }
+        else {
+            _title = res.data;
+            _icon = 'error';
+        }
+        uni.showToast({
+            title: _title,
+            icon: _icon,
+            mask: true,
+            duration: 1000
+        });
+        request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
     }
 </script>
 
