@@ -1,8 +1,12 @@
-// export const login_post_url = 'https://app.lvrulanbio.com/login';
-export const login_post_url = 'http://localhost:9013/login';
+// localhost
+// export const server_url = 'http://localhost:7500/';
+// 49 server
+export const server_url = 'http://www.ynufe.tech:7500/';
+// export const server_url = 'http://49.232.133.59:7500/';
+//
 // export const login_post_url = 'https://www.ynufe.tech/login';
 // export const data_post_url = 'https://app.lvrulanbio.com/post_simu_ws';
-export const data_post_url = 'http://localhost:9013/';
 
-export const login_websocket_url = 'wss://app.lvrulanbio.com/ws';
+
+// export const login_websocket_url = 'wss://app.lvrulanbio.com/ws';
 // export const login_websocket_url = 'https://app.lvrulanbio.com/login';

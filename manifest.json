@@ -63,12 +63,14 @@
             },
             "ios" : {
                 "UIBackgroundModes" : [ "audio" ],
-                "urlschemewhitelist" : [ "baidumap", "iosamap" ]
+                "urlschemewhitelist" : [ "baidumap", "iosamap" ],
+                "dSYMs" : false
             },
             "sdkConfigs" : {
                 "speech" : {
                     "ifly" : {}
-                }
+                },
+                "ad" : {}
             },
             "orientation" : [ "portrait-primary" ],
             "icons" : {

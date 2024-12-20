@@ -24,11 +24,6 @@
             </uni-popup-message>
         </uni-popup>
 
-        <!-- 提示窗示例 -->
-        <uni-popup ref="alertDialogRef" type="dialog">
-            <uni-popup-dialog :type="msgType" cancelText="关闭" title="添加分区失败" :content="messageText"
-                @confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
-        </uni-popup>
     </view>
 </template>
 
@@ -41,7 +36,7 @@
     const messageText = ref('这是一条成功提示');
     // 使用 ref 获取组件实例
     const messageRef = ref(null);
-    const alertDialogRef = ref(null);
+    const inputDialogRef = ref(null);
     //
     let area_name = ref("");
     //
@@ -71,15 +66,11 @@
 
     const dialogConfirm = () => {
         console.log('点击确认');
-        // messageText.value = `点击确认了 ${msgType.value} 窗口`;
-        // (messageRef.value as any).open();
     };
 
     const dialogClose = () => {
         console.log('点击关闭');
     };
-
-
 
     const messageToggle = (type : string) => {
         msgType.value = type;
@@ -99,7 +90,7 @@
             id: item.area_id,
             content: item.area_name,
             options: [
-                // { text: '编辑' },
+                { text: '编辑' },
                 { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
             ]
         })))
@@ -109,7 +100,7 @@
     function handleMessage_insertArea(res : { statusCode : number; data : any; }) {
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
-            messageToggle(res.data);
+            messageToggle("分区添加成功");
             area_name.value = ''
             request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
         }
@@ -119,14 +110,14 @@
     }
 
     function add_area() {
-        request_post_simu_ws("insertArea", { area_name: area_name.value }, handleMessage_insertArea);
+        request_post_simu_ws("modifyArea", { command: "insert_area", area_name: area_name.value }, handleMessage_insertArea);
     }
 
     function swipeChange(index : number) {
         console.log('当前索引：', index);
     }
 
-    function swipeClick(e : any, index : number) {
+    function swipeClick(e : any, area_id : number) {
         const { content } = e;
         if (content.text === '删除') {
             uni.showModal({
@@ -134,7 +125,7 @@
                 content: '是否删除',
                 success: (res) => {
                     if (res.confirm) {
-                        request_post_simu_ws("delArea", { area_id: index });
+                        request_post_simu_ws("modifyArea", { command: "del_area", area_id: area_id }, handleMessage_delArea);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -142,11 +133,12 @@
             });
         } else if (content.text === '编辑') {
             uni.showModal({
-                title: '提示',
-                content: '是否编辑',
-                success: (res) => {
+                title: '分区名称修改',
+                editable: true,
+                placeholderText: '请输入新的区域名称',
+                success: function (res) {
                     if (res.confirm) {
-                        all_areas.splice(index!, 1);
+                        request_post_simu_ws("modifyArea", { command: "update_area", area_id: area_id, area_name: res.content }, handleMessage_updateArea);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -157,6 +149,28 @@
                 title: `点击了${e.content.text}按钮`,
                 icon: 'none'
             });
+        }
+    }
+    
+    function handleMessage_updateArea(res : { statusCode : number; data : any; }) {
+        console.log('Received WebSocket message:', res);
+        if (200 == res.statusCode) {
+            messageToggle("分区修改成功");
+            request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
+        }
+        else {
+            dialogToggle('error', res.data);
+        }
+    }
+
+    function handleMessage_delArea(res : { statusCode : number; data : any; }) {
+        console.log('Received WebSocket message:', res);
+        if (200 == res.statusCode) {
+            messageToggle("分区删除成功");
+            request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
+        }
+        else {
+            dialogToggle('error', res.data);
         }
     }
 </script>

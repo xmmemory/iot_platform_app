@@ -61,13 +61,13 @@
 
     function device_edit(id, name) {
         uni.navigateTo({
-            url: `/pages/manage/edit_device?device_id=${id}&name=${name}`,
+            url: `/pages/manage/edit_device?device_id=${id}&device_name=${name}`,
         });
     }
 
     function vars_edit(id, name) {
         uni.navigateTo({
-            url: `/pages/manage/manage_vars?device_id=${id}&name=${name}`,
+            url: `/pages/manage/manage_vars?device_id=${id}&device_name=${name}`,
         });
     }
 

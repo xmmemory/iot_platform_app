@@ -1,10 +1,10 @@
-import { login_post_url, data_post_url } from "./server_parameter.ts"
+import { server_url } from "./server_parameter.ts"
 
 export function request_auth(data : { username : string; password : string; }, callback: { (res: { statusCode: string | number; data: any; }): void; (arg0: any): void; }) {
     let header = {
         'Content-Type': 'application/json',
     };
-    request_post(login_post_url, header, data, callback);
+    request_post(server_url + 'login', header, data, callback);
 }
 
 export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0: any) => void) {
@@ -18,7 +18,7 @@ export function request_post_simu_ws(post_url : string, data : any, callback ?: 
     } else {
         ;
     }
-    request_post(data_post_url + post_url, header, data, callback);
+    request_post(server_url + post_url, header, data, callback);
 }
 
 function request_post(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : any) => void) {
@@ -27,7 +27,7 @@ function request_post(url : string, header : { "Content-Type" : string; }, data 
         method: 'POST',
         timeout: 5000,
         header: header,
-        withCredentials: true, // 添加这一行来允许跨域携带 Cookie                
+        withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
         data: data,
         success: (res) => {

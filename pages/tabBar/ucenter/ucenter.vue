@@ -1,6 +1,6 @@
 <template>
     <template v-if="login_status">
-        <view class="auth_layout">
+        <view class="uni-container">
             <view>
                 <image class="auth_logo" src="/static/company_logo/s-logo.png" style="margin-bottom: 10px;"
                     mode="heightFix"></image>
@@ -9,29 +9,25 @@
                     <view style="margin-bottom: 5px;"> APP版本: {{system_info.appVersion}} </view>
                 </view>
             </view>
-            <!-- <view v-if="auth_userName.includes('admin')" class="jump_url" v-for="(item,index) in papges_url"
-                :key='item.id'>
-                <navigator :url="item.url">{{item.title}} </navigator>
-            </view> -->
-            <view class="navi-container">
-                <navigator url="/pages/manage/manage_devices" open-type="navigate" hover-class="other-navigator-hover"
-                    class="navigator-button">
-                    <button class="login-button" type="default">设备管理</button>
-                </navigator>
-                <navigator url="/pages/manage/manage_areas" open-type="navigate" hover-class="other-navigator-hover"
-                    class="navigator-button">
-                    <button class="login-button" type="default">区域管理</button>
-                </navigator>
-
-                <navigator url="/pages/manage/popup" open-type="navigate" hover-class="other-navigator-hover"
-                    class="navigator-button">
-                    <button class="login-button" type="default">pop</button>
-                </navigator>
-
-                <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
-                <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
-                <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>
+            <view v-if="auth_userName.includes('leon')" class="jump_url">
+                <view class="navi-container">
+                    <navigator url="/pages/manage/manage_devices" open-type="navigate"
+                        hover-class="other-navigator-hover" class="navigator-button">
+                        <button class="login-button" type="default">设备管理</button>
+                    </navigator>
+                    <navigator url="/pages/manage/manage_areas" open-type="navigate" hover-class="other-navigator-hover"
+                        class="navigator-button">
+                        <button class="login-button" type="default">区域管理</button>
+                    </navigator>
+                </view>
             </view>
+
+
+            <button size="default" type="primary" class="navigator-button" @click="call_us">联系我们</button>
+
+            <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
+            <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
+            <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>
             <view v-if="auth_userName.includes('admin')">{{system_info}}</view>
         </view>
     </template>
@@ -98,6 +94,15 @@
         func_login(auth_userName, auth_password);
     };
 
+    function call_us() {
+        uni.makePhoneCall({
+            phoneNumber: "0531-59534953",
+            success: () => {
+                console.log("成功拨打电话")
+            }
+        })
+    }
+
     function checkUpdate() {
         uni.showToast({
             title: '您使用的已是最新版本',
@@ -123,13 +128,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .auth_layout {
-        background-size: cover;
-        background-color: #dbf8f8;
-        /* background-image: url("/static/img/bg/bg.png"); */
-        // background-image: url("https://app.lvrulanbio.com/img/bg/bg.png");
-    }
-
+    // background-color: #dbf8f8;
     /* 整个页面的容器 */
     .auth_logo {
         height: 100px;

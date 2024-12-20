@@ -10,7 +10,7 @@
                 <div v-if="showDropdown" class="dropdown-menu">
                     <div v-for="(project, index) in all_projects" :key="index" class="dropdown-item"
                         @click="selectProject(project)">
-                        {{ project[1] }}
+                        {{ project.project_name }}
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                         <div class="device-info">
                             <div class="device-title">{{ device[1] }}{{ device[2] }}</div>
                             <div class="device-details">{{ all_areas.find(area => area[0] === device[3])?.[1] }} |
-                                {{ "离线" }}
+                                {{ "在线" }}
                             </div>
                         </div>
                     </div>
@@ -75,11 +75,10 @@
 
     // project data.
     let all_projects = ref([
-        { "1": "项目1" },
-        { "2": "项目2" }
+        { project_id: 1, project_name: "项目1" },
+        { project_id: 1, project_name: "项目2" }
     ]);
     let selectedProject = ref(all_projects.value[0][0]);
-
     let all_areas = ref(null);
     let all_devices = ref(null);
 
@@ -94,19 +93,19 @@
 
     // 定义设备图标对象
     const deviceIcons : DeviceIcons = {
-        "搅拌机": '/static/device/stir.svg',
-        "加药泵": '/static/device/dosing.svg',
-        "防腐泵": '/static/device/waterPump.svg',
-        "风机": '/static/device/fan.svg',
-        "PH计": '/static/device/PH.svg',
-        "氨气传感器": '/static/device/NH3.svg',
-        "甲烷传感器": '/static/device/CH4.svg',
+        "搅拌机": 'static/device/stir.svg',
+        "加药泵": 'static/device/dosing.svg',
+        "防腐泵": 'static/device/waterPump.svg',
+        "风机": 'static/device/fan.svg',
+        "PH计": 'static/device/PH.svg',
+        "氨气传感器": 'static/device/NH3.svg',
+        "甲烷传感器": 'static/device/CH4.svg',
     };
 
     function getDeviceIconUrl(device_name : string) {
         // console.log(device_name)
         // 如果 device Icons 对象中存在 device_name，则返回对应的 URL，否则返回默认图标
-        return deviceIcons[device_name] || '/static/img/icon_device/device_default.png';
+        return deviceIcons[device_name] || 'static/img/icon_device/device_default.png';
     }
 
     onShow(() => {
@@ -122,7 +121,7 @@
     })
 
     function handleMessage_projects(res : { data : any; }) {
-        all_projects.value = res.data.map(item => [item.project_id, item.project_name]);
+        all_projects.value = res.data;
         selectProject(all_projects.value[0]);
         // console.log('Received msg all_projects:', all_projects);
         request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
@@ -130,7 +129,7 @@
 
     function handleMessage_areas(res : { data : any; }) {
         all_areas.value = res.data.map(item => [item.area_id, item.area_name]);
-        all_areas.value.unshift([0, "全部区域"]);
+        all_areas.value.unshift([0, "全部设备"]);
         // console.log('Received msg all_areas:', all_areas);
         request_post_simu_ws("getDevice", { command: "all_devices" }, handleMessage_devices);
     }
@@ -168,8 +167,8 @@
     // switch project drop-down menu logic.
     const showDropdown = ref(false);
     const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
-    const selectProject = (area : unknown) => {
-        selectedProject.value = area[1];
+    const selectProject = (project : any) => {
+        selectedProject.value = project.project_name;
         showDropdown.value = false;
     };
 

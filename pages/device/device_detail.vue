@@ -1,21 +1,72 @@
 <template>
     <view class="container">
+        <page-head :title="deviceName"></page-head>
         <template v-for="(item, index) in device_vars" :key="item.var_id">
-            <uni-card :title=" item.var_name" sub-title="deviceArea" :extra="deviceArea" :thumbnail="avatar"
-                @click="onClick">
-                <template v-slot:title>
-                    <uni-list>
-                        <uni-list-item :show-switch=" true" :title="item.var_name" />
-                    </uni-list>
+
+            <template v-if="item.var_permission === 'R'">
+                <div
+                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 10rpx; margin-bottom: 10rpx;">
+                    {{ item.var_name }}
+                </div>
+                <!-- <button type="primary" size="mini">read</button> -->
+                <template v-if="item.var_type === 'BOOL'">
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                        :title="'当前状态：' + varBoolMapping[item.latest_value]"
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime"
+                        :clickable="false"></uni-list-chat>
                 </template>
-                <!-- <text class="uni-body">这是一个带头像和双标题的基础卡片，此示例展示了一个完整的卡片。</text>
-                <uni-td>
-                    <view class="uni-group">
-                        <button type="primary" size="mini">开启</button>
-                        <button type="warn" size="mini">关闭</button>
-                    </view>
-                </uni-td> -->
-            </uni-card>
+                <template v-else>
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime"
+                        :clickable="false"></uni-list-chat>
+                </template>
+            </template>
+
+            <template v-else-if="item.var_permission === 'R/W'">
+                <!-- <button type="primary" size="mini">read&write</button> -->
+                <div
+                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 10rpx; margin-bottom: 10rpx;">
+                    {{ item.var_name }}
+                </div>
+                <template v-if="item.var_type === 'BOOL'">
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                        :title="'当前状态：' + varBoolMapping[item.latest_value]"
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
+                        @click="changeStatus(varBoolMapping[item.latest_value])"></uni-list-chat>
+                </template>
+                <template v-else>
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
+                        @click="inputValue"></uni-list-chat>
+                </template>
+            </template>
+
+            <template v-else-if="item.var_permission === 'W'">
+                <div
+                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 10rpx; margin-bottom: 10rpx;">
+                    {{ item.var_name }}
+                </div>
+                <!-- <button type="primary" size="mini">write</button> -->
+                <template v-if="item.var_type === 'BOOL'">
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
+                        @click="changeStatus"></uni-list-chat>
+                </template>
+                <template v-else>
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
+                        avatar="/static/img/icon_device/device_default.png"
+                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
+                        @click="inputValue"></uni-list-chat>
+                </template>
+            </template>
+
         </template>
     </view>
 </template>
@@ -25,6 +76,7 @@
     import { onLoad } from '@dcloudio/uni-app';
     // import { codeMapping } from '@/common/mapping.ts'
     import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { codeMapping, varBoolMapping } from '@/common/mapping.ts'
 
     const device_id = ref<string | null>(null);
     const deviceName = ref<string | null>(null);
@@ -32,10 +84,43 @@
     const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
 
-    const avatar = 'https://web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png';
+    function changeStatus(e) {
+        let content_key = "";        
+        if (e == "关闭") {
+            content_key = "开启";
+            console.log(content_key)
+        }
+        else {
+            content_key = "关闭";
+            console.log(content_key)
+        }
+        uni.showModal({
+            title: '提示',
+            content: "确认" + content_key + "设备？",
+            success: (res) => {
+                if (res.confirm) {
+                    ;
+                } else if (res.cancel) {
+                    console.log('用户点击取消');
+                }
+            }
+        });
+    }
 
-    function onClick(e) {
-        console.log(e)
+    function inputValue(e) {
+        uni.showModal({
+            title: '数据修改',
+            editable: true,
+            placeholderText: '请输入',
+            success: function (res) {
+                if (res.confirm) {
+                    console.log(res.content);
+                    // request_post_simu_ws("modifyArea", { command: "update_area", area_id: area_id, area_name: res.content }, handleMessage_updateArea);
+                } else if (res.cancel) {
+                    console.log('用户点击取消');
+                }
+            }
+        });
     }
 
     // 获取页面参数并设置标题
@@ -55,6 +140,12 @@
 
     function handleMessage_vars(res : { data : any; }) {
         device_vars.value = res.data;
+        // 将 "T" 替换为 " ":
+        device_vars.value = device_vars.value.map((item : any) => ({
+            ...item,
+            last_datetime: item.last_datetime.replace('T', ' '),
+        }));
+
         console.log('Received WebSocket message:', res);
         uni.hideToast();
     }
@@ -74,5 +165,50 @@
     .device-details {
         font-size: 16px;
         color: #666;
+    }
+
+    .device-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+
+        .no-devices {
+            grid-column: 1 / -1;
+            /* 占据所有列 */
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .device-card {
+            background-color: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+
+            .device-icon {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                margin-bottom: 10px;
+            }
+
+            .device-info {
+                .device-title {
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+
+                .device-details {
+                    font-size: 16px;
+                    color: #666;
+                }
+            }
+        }
     }
 </style>

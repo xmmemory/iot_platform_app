@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <uni-section title="新增设备" type="line">
+        <uni-section :title="device_id ? '设备编辑' : '新增设备'" type="line">
             <view class="example">
                 <!-- 基础用法，不包含校验规则 -->
                 <uni-forms ref="baseForm" :model="moment_device" labelWidth="80px">

@@ -2,7 +2,7 @@
     <view>
         <view class="uni-container">
             <uni-card is-full :is-shadow="false">
-                <text class="uni-h2">变量管理</text>
+                <text class="uni-h2">{{device_name}}</text>
             </uni-card>
             <button size="default" type="default" @click="var_edit()">添加变量</button>
             <uni-table ref="table" :loading="loading" border stripe emptyText="暂无更多数据">
@@ -40,10 +40,12 @@
     const loading = ref(false);
     let device_vars = ref(null);
     const device_id = ref(null);
+    const device_name = ref(null);
 
     onLoad((options) => {
         if (options.device_id) {
             device_id.value = options.device_id || null;
+            device_name.value = options.device_name || null;
         }
     });
 
