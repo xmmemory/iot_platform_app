@@ -1379,7 +1379,10 @@
         {
             "root": "pages/device",
             "pages": [{
-                    "path": "device_detail"
+                    "path": "device_detail",
+                    "style": {
+                        "navigationBarTitleText": "设备详情"
+                    }
                 },
                 {
                     "path": "device_detail_1"
@@ -1389,32 +1392,50 @@
         {
             "root": "pages/manage",
             "pages": [{
-                    "path": "manage_areas",
-                    "style": {
-                        "navigationBarTitleText": "区域管理"
-                    }
-                }, {
-                    "path": "manage_devices",
-                    "style": {
-                        "navigationBarTitleText": "设备管理"
-                    }
-                }, {
-                    "path": "manage_vars",
-                    "style": {
-                        "navigationBarTitleText": "变量管理"
-                    }
-                }, {
-                    "path": "edit_device",
-                    "style": {
-                        "navigationBarTitleText": "设备编辑"
-                    }
-                }, {
-                    "path": "edit_var",
-                    "style": {
-                        "navigationBarTitleText": "变量编辑"
-                    }
+                "path": "manage_areas",
+                "style": {
+                    "navigationBarTitleText": "区域管理"
                 }
-            ]
+            }, {
+                "path": "manage_devices",
+                "style": {
+                    "navigationBarTitleText": "设备管理"
+                }
+            }, {
+                "path": "manage_vars",
+                "style": {
+                    "navigationBarTitleText": "变量管理"
+                }
+            }, {
+                "path": "edit_device",
+                "style": {
+                    "navigationBarTitleText": "设备编辑"
+                }
+            }, {
+                "path": "edit_var",
+                "style": {
+                    "navigationBarTitleText": "变量编辑"
+                }
+            }]
+        },
+        {
+            "root": "pages/notice",
+            "pages": [{
+                "path": "privacy_policy",
+                "style": {
+                    "navigationBarTitleText": "隐私政策"
+                }
+            }, {
+                "path": "term_server",
+                "style": {
+                    "navigationBarTitleText": "服务条款"
+                }
+            }, {
+                "path": "forgot_password",
+                "style": {
+                    "navigationBarTitleText": "忘记密码"
+                }
+            }]
         }
     ],
     "globalStyle": {

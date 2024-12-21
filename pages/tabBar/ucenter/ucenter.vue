@@ -46,9 +46,9 @@
             <!-- 协议勾选框 -->
             <view class="uni-flex uni-row uni-center" style="justify-content: center; align-items: center;">
                 <view class="text">登录即表示同意绿如蓝账号</view>
-                <navigator url="/pages/agreement/agreement" class="agreement-link">用户服务协议</navigator>
+                <navigator url="/pages/notice/term_server" class="agreement-link">用户服务协议</navigator>
                 <view class="text" style="width: 30rpx;">和</view>
-                <navigator url="/pages/privacy/privacy" class="agreement-link">隐私政策</navigator>
+                <navigator url="/pages/notice/privacy_policy" class="agreement-link">隐私政策</navigator>
             </view>
 
             <view class="auth_input">
@@ -58,7 +58,7 @@
 
             <!-- 链接导航 -->
             <view class="links uni-center">
-                <navigator url="/pages/forgot-password/forgot-password">忘记密码</navigator>
+                <navigator url="/pages/notice/forgot_password">忘记密码</navigator>
             </view>
         </view>
     </template>
