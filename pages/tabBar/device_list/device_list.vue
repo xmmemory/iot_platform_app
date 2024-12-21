@@ -5,9 +5,9 @@
             <div class="area">
                 <div class="project" @click="toggleDropdown">
                     {{ selectedProject}}
-                    <i class="icon-dropdown">▼</i>
+                    <i v-if="all_projects.length > 1" class="icon-dropdown">▼</i>
                 </div>
-                <div v-if="showDropdown" class="dropdown-menu">
+                <div v-if="showDropdown && all_projects.length > 1" class="dropdown-menu">
                     <div v-for="(project, index) in all_projects" :key="index" class="dropdown-item"
                         @click="selectProject(project)">
                         {{ project.project_name }}
@@ -181,8 +181,12 @@
     all_areas
 
     const goToDevicePage = (device : { id : any; device_name : any; status : any; area : any; }) => {
+        const url = `/pages/device/device_detail?id=${device[0]}&name=${device[1] + device[2]}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+            ? "未指定分区"
+            : all_areas.value.find(area => area[0] === device[3])?.[1]
+            }`;
         uni.navigateTo({
-            url: `/pages/device/device_detail?id=${device[0]}&name=${device[1] + device[2]}&area=${all_areas.value.find(area => area[0] === device[3])?.[1]}`,
+            url: url,
         });
     };
 </script>

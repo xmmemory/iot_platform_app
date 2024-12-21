@@ -71,13 +71,7 @@
 		}
 	}
 
-	/* 顶栏通栏样式 */
-	/* .uni-top-window {
-	    left: 0;
-	    right: 0;
-	} */
-
-	uni-page-body {
+	.uni-page-body {
 		background-color: #F5F5F5 !important;
 		min-height: 100% !important;
 		height: auto !important;

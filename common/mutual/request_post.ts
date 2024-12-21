@@ -1,13 +1,53 @@
 import { server_url } from "./server_parameter.ts"
 
-export function request_auth(data : { username : string; password : string; }, callback: { (res: { statusCode: string | number; data: any; }): void; (arg0: any): void; }) {
+export function request_get_simu_ws(get_url : string, callback ?: (arg0 : any) => void) {
+    let header = {
+        'Content-Type': 'application/json',
+    };
+
+    const systemInfo = uni.getSystemInfoSync();
+    if (systemInfo.uniPlatform === 'mp-weixin') {
+        header['cookie'] = uni.getStorageSync('cookie').toString() || 'null';
+    } else {
+        ;
+    }
+    request_get(server_url + get_url, header, callback);
+}
+
+function request_get(url : string, header : { "Content-Type" : string; }, callback ?: (arg0 : any) => void) {
+    uni.request({
+        url: url,
+        method: 'GET',
+        timeout: 3000,
+        header: header,
+        withCredentials: true, // 跨域请求时携带凭证（cookies）
+        enableCookie: true,
+        success: (res) => {
+            // 如果 callback 存在，则调用它
+            if (callback) {
+                callback(res);
+            }
+        },
+        fail: (res) => {
+            console.log(res);
+            uni.showToast({
+                title: res.errMsg,
+                icon: 'none',
+                mask: true,
+                duration: 2000
+            })
+        },
+    });
+}
+
+export function request_auth(data : { username : string; password : string; }, callback : { (res : { statusCode : string | number; data : any; }) : void; (arg0 : any) : void; }) {
     let header = {
         'Content-Type': 'application/json',
     };
     request_post(server_url + 'login', header, data, callback);
 }
 
-export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0: any) => void) {
+export function request_post_simu_ws(post_url : string, data : any, callback ?: (arg0 : any) => void) {
     let header = {
         'Content-Type': 'application/json',
     };

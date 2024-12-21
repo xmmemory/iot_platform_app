@@ -7,19 +7,20 @@
             </text>
         </view>
         <view class="footer">
-            <button type="default" @click="onConfirm">联系管理员</button>
+            <button type="default" @click="call_us">联系管理员</button>
         </view>
     </view>
 </template>
 
-<script>
-    export default {
-        methods: {
-            onConfirm() {
-                uni.navigateBack(); // 返回上一页
+<script setup lang="ts">
+    function call_us() {
+        uni.makePhoneCall({
+            phoneNumber: "15725418370",
+            success: () => {
+                console.log("成功拨打电话")
             }
-        }
-    };
+        })
+    }
 </script>
 
 <style scoped>

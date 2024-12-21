@@ -21,7 +21,6 @@ function auth_confirm(res : { statusCode : string | number; data : any; }) {
             mask: true,
             duration: 1000
         });
-        uni.removeStorageSync('auth_userName');
         uni.removeStorageSync('auth_password');
         console.log(res);
     }

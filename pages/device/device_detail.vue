@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <page-head :title="deviceName"></page-head>
+        <page-head :title="deviceName + ' | 区域：' + deviceArea"></page-head>
         <template v-for="(item, index) in device_vars" :key="item.var_id">
 
             <template v-if="item.var_permission === 'R'">
@@ -11,9 +11,8 @@
                 <!-- <button type="primary" size="mini">read</button> -->
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                        :title="'当前状态：' + varBoolMapping[item.latest_value]"
-                        avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                        :clickable="false"></uni-list-chat>
+                        :title="'当前状态：' + varBoolMapping[item.latest_value]" avatar="/static/device/device_default.png"
+                        note="只读" :time="item.last_datetime" :clickable="false"></uni-list-chat>
                 </template>
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
@@ -31,9 +30,9 @@
                 </div>
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                        :title="'当前状态：' + varBoolMapping[item.latest_value]"
-                        avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
-                        :clickable="true" @click="changeStatus(varBoolMapping[item.latest_value])"></uni-list-chat>
+                        :title="'当前状态：' + varBoolMapping[item.latest_value]" avatar="/static/device/device_default.png"
+                        note="可控" :time="item.last_datetime" :clickable="true"
+                        @click="changeStatus(varBoolMapping[item.latest_value])"></uni-list-chat>
                 </template>
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
@@ -51,15 +50,13 @@
                 <!-- <button type="primary" size="mini">write</button> -->
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
-                        avatar="/static/device/device_default.png"
-                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
-                        @click="changeStatus"></uni-list-chat>
+                        avatar="/static/device/device_default.png" :note="codeMapping[item.var_type] + item.var_code"
+                        :time="item.last_datetime" :clickable="true" @click="changeStatus"></uni-list-chat>
                 </template>
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
-                        avatar="/static/device/device_default.png"
-                        :note="codeMapping[item.var_type] + item.var_code" :time="item.last_datetime" :clickable="true"
-                        @click="inputValue"></uni-list-chat>
+                        avatar="/static/device/device_default.png" :note="codeMapping[item.var_type] + item.var_code"
+                        :time="item.last_datetime" :clickable="true" @click="inputValue"></uni-list-chat>
                 </template>
             </template>
 
@@ -75,7 +72,6 @@
 
     const device_id = ref<string | null>(null);
     const deviceName = ref<string | null>(null);
-    const deviceStatus = ref<string | null>(null);
     const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
 
@@ -101,7 +97,7 @@
             }
         });
     }
-
+    
     function inputValue(e) {
         uni.showModal({
             title: '数据修改',
@@ -123,15 +119,10 @@
         if (options.id) {
             device_id.value = options.id || null;
             deviceName.value = options.name || null;
-            deviceStatus.value = options.status || null;
             deviceArea.value = options.area || null;
-            // 动态设置页面标题
-            // uni.setNavigationBarTitle({
-            //     title: deviceName.value,
-            // });
+            request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            restartMonitorChange(INTERVAL);
         }
-        request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
-        restartMonitorChange(INTERVAL);
     });
 
     onUnload(() => {

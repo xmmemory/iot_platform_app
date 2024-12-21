@@ -8,7 +8,7 @@
 	export default {
 		data() {
 			return {
-				url: 'http://www.lvrulanbio.com'
+				url: 'http://www.lvrulanbio.com/lvrulan1/wap_pic/28344069.html'
 			}
 		},
 		onLoad(options) {

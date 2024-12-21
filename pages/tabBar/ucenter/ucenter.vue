@@ -27,8 +27,15 @@
 
             <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
-            <button v-if="auth_userName.includes('admin')" type="warn" @click="clearTotalData">清空缓存数据</button>
-            <view v-if="auth_userName.includes('admin')">{{system_info}}</view>
+            <button v-if="auth_userName.includes('leon')" type="warn" @click="clearTotalData">清空缓存数据</button>
+
+            <template v-if="progress > 0">
+                <p>下载进度: {{ progress }}%</p>
+                <view class="progress-bar">
+                    <view class="progress" :style="{ width: progress + '%' }"></view>
+                </view>
+            </template>
+
         </view>
     </template>
     <template v-else>
@@ -66,14 +73,16 @@
 
 <script setup lang="ts">
     import { ref } from 'vue';
-    import { login_status, func_login } from "@/common/mutual/auth.ts"
     import { onLoad } from '@dcloudio/uni-app'
+    import { request_get_simu_ws } from "@/common/mutual/request_post.ts"
+    import { login_status, func_login } from "@/common/mutual/auth.ts"
 
     const system_info = uni.getSystemInfoSync();
     // console.log(system_info)
     // 用户输入的数据
     const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
     const auth_password = ref<string>(uni.getStorageSync('auth_password'));
+    let progress = ref(0)
 
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
@@ -103,14 +112,91 @@
         })
     }
 
+    function handleMessage_res(res : { data : any; }) {
+        console.log('Received WebSocket message:', res.data);
+        // uni.showToast({
+        //     title: res.data,
+        //     icon: "none",
+        //     mask: true,
+        //     duration: 1000
+        // });
+    }
+
     function checkUpdate() {
-        uni.showToast({
-            title: '您使用的已是最新版本',
-            icon: "none",
-            mask: true,
-            duration: 1000
+        request_get_simu_ws("index", handleMessage_res);
+        // 获取当前版本号
+        const currentVersion = plus.runtime.version;
+        const latest_version = plus.runtime.version;
+        const release_notes = "优化了用户体验";
+        const download_url = "http://49.232.133.59:7500/download/apk.apk"
+        // uni.showToast({
+        //     title: '当前版本: ' + currentVersion,
+        //     icon: "none",
+        //     mask: true,
+        //     duration: 1000
+        // });
+        // 提示用户更新
+        uni.showModal({
+            title: '有新版本啦！',
+            content: `最新版本：${latest_version}\n更新内容：${release_notes}`,
+            confirmText: '去更新',
+            cancelText: '暂不更新',
+            success: (res) => {
+                if (res.confirm) {
+                    // 下载并安装更新
+                    downloadAndInstallUpdate(download_url);
+                }
+            }
         });
     }
+
+    function downloadAndInstallUpdate(downloadUrl) {
+        console.log("Starting download from:", downloadUrl);
+
+        // 初始化进度
+        const dtask = plus.downloader.createDownload(downloadUrl, {}, (download, status) => {
+            if (status === 200) {
+                console.log("Download successful, file path:", download.filename);
+
+                // 安装 APK
+                plus.runtime.install(download.filename, {}, () => {
+                    console.log("Install successful, restarting...");
+                    uni.showToast({ title: '更新成功，即将重启应用', icon: 'none' });
+                    plus.runtime.restart();
+                }, (e) => {
+                    console.error("Install failed:", e.message);
+                    uni.showToast({ title: '安装失败，请稍后再试', icon: 'none' });
+                });
+            } else {
+                console.error("Download failed with status:", status);
+                uni.showToast({ title: '下载失败，请稍后再试', icon: 'none' });
+            }
+        });
+
+        // 监听下载进度
+        dtask.addEventListener("statechanged", (task, status) => {
+            if (task.state === 3) { // 任务正在下载
+                const downloadedSize = task.downloadedSize; // 已下载字节数
+                const totalSize = task.totalSize; // 总字节数
+
+                if (totalSize > 0) {
+                    const progress = Math.floor((downloadedSize / totalSize) * 100);
+                    console.log(`Download progress: ${progress}%`);
+                    // 更新进度条
+                    updateProgress(progress); // 定义更新进度的函数
+                }
+            }
+        });
+
+        dtask.start();
+        console.log("Download task started:", dtask);
+    }
+
+    function updateProgress(e : number) {
+        progress.value = e;
+    }
+
+
 
     function signOut() {
         login_status.value = false;
@@ -122,7 +208,8 @@
             title: '缓存数据已清空',
             icon: 'success',
             mask: true,
-            duration: 2000
+            duration: 2000,
+
         })
     }
 </script>
@@ -133,7 +220,7 @@
     .auth_logo {
         height: 100px;
         width: 100px;
-        margin: 300rpx 18% 120rpx 18%;
+        margin: 250rpx 18% 120rpx 18%;
     }
 
     .auth_input {
@@ -197,4 +284,20 @@
         margin-bottom: 20px;
         /* 为每个按钮添加底部外边距 */
     }
+    
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+    
+    .progress {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+    }
+
 </style>
