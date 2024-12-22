@@ -1,8 +1,7 @@
 <template>
     <view class="container">
-        <page-head :title="deviceName + ' | 区域：' + deviceArea"></page-head>
+        <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
         <template v-for="(item, index) in device_vars" :key="item.var_id">
-
             <template v-if="item.var_permission === 'R'">
                 <div
                     style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx;">
@@ -15,10 +14,19 @@
                         note="只读" :time="item.last_datetime" :clickable="false"></uni-list-chat>
                 </template>
                 <template v-else>
-                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
-                        avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                        :clickable="false"></uni-list-chat>
+                    <template v-if="item.var_name === '运行状态'">
+                        <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                            :title="'当前状态：' + varStatusMapping[item.latest_value]"
+                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                            :clickable="false"></uni-list-chat>
+                    </template>
+                    <template v-else>
+                        <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                            :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
+                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                            :clickable="false"></uni-list-chat>
+                    </template>
+
                 </template>
             </template>
 
@@ -32,13 +40,13 @@
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
                         :title="'当前状态：' + varBoolMapping[item.latest_value]" avatar="/static/device/device_default.png"
                         note="可控" :time="item.last_datetime" :clickable="true"
-                        @click="changeStatus(varBoolMapping[item.latest_value])"></uni-list-chat>
+                        @click="changeStatus(item.var_full_code, varBoolMapping[item.latest_value])"></uni-list-chat>
                 </template>
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
                         :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
                         avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
-                        :clickable="true" @click="inputValue"></uni-list-chat>
+                        :clickable="true" @click="inputValue(item.var_full_code)"></uni-list-chat>
                 </template>
             </template>
 
@@ -56,10 +64,10 @@
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
                         avatar="/static/device/device_default.png" :note="codeMapping[item.var_type] + item.var_code"
-                        :time="item.last_datetime" :clickable="true" @click="inputValue"></uni-list-chat>
+                        :time="item.last_datetime" :clickable="true"
+                        @click="inputValue(item.var_full_code)"></uni-list-chat>
                 </template>
             </template>
-
         </template>
     </view>
 </template>
@@ -68,37 +76,46 @@
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
     import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
-    import { codeMapping, varBoolMapping } from '@/common/mapping.ts'
+    import { codeMapping, varBoolMapping, varStatusMapping } from '@/common/mapping.ts'
 
     const device_id = ref<string | null>(null);
     const deviceName = ref<string | null>(null);
     const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
 
-    function changeStatus(e) {
-        let content_key = "";
-        if (e == "关闭") {
-            content_key = "开启";
-            console.log(content_key)
+    function changeStatus(var_full_code : any, var_status : string) {
+        // console.log(var_full_code, var_status)
+        let new_var_value = 'False';
+        if (var_status == "关闭") {
+            new_var_value = 'True';
         }
         else {
-            content_key = "关闭";
-            console.log(content_key)
+            new_var_value = 'False';
         }
         uni.showModal({
             title: '提示',
-            content: "确认" + content_key + "设备？",
+            content: "确认" + varBoolMapping[new_var_value] + "设备？",
             success: (res) => {
                 if (res.confirm) {
-                    ;
+                    request_post_simu_ws("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
+                    uni.showToast({
+                        title: '指定发送中',
+                        icon: 'loading',
+                        mask: true,
+                        duration: 2000
+                    })
                 } else if (res.cancel) {
                     console.log('用户点击取消');
                 }
             }
         });
     }
-    
-    function inputValue(e) {
+
+    function handleMessage_control_res(res : { data : any; }) {
+        ;
+    }
+
+    function inputValue(var_full_code: any) {
         uni.showModal({
             title: '数据修改',
             editable: true,
@@ -106,12 +123,18 @@
             success: function (res) {
                 if (res.confirm) {
                     console.log(res.content);
-                    // request_post_simu_ws("modifyArea", { command: "update_area", area_id: area_id, area_name: res.content }, handleMessage_updateArea);
+                    request_post_simu_ws("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
+                    uni.showToast({
+                        title: '指定发送中',
+                        icon: 'loading',
+                        mask: true,
+                        duration: 2000
+                    })
                 } else if (res.cancel) {
                     console.log('用户点击取消');
                 }
             }
-        });
+        });        
     }
 
     // 获取页面参数并设置标题
@@ -140,12 +163,10 @@
             ...item,
             last_datetime: item.last_datetime.replace('T', ' '),
         }));
-
-        console.log('Received WebSocket message:', res);
-        uni.hideToast();
+        // console.log('Received WebSocket message:', res);
     }
 
-    let INTERVAL = 3000; // 定时器间隔
+    let INTERVAL = 500; // 定时器间隔
     let monitorRecordChange = ref();
 
     function startMonitorChange(interval_ms : number) {

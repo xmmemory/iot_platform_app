@@ -42,7 +42,7 @@
                     </div>
                     <div v-else v-for="(device, index) in filteredDevices" :key="index" class="device-card"
                         @click="goToDevicePage(device)">
-                        <img :src="getDeviceIconUrl(device[1])" alt="暂无图标" class="device-icon" />
+                        <img :src="getDeviceIconUrl(device[1]+device[2])" alt="暂无图标" class="device-icon" />
                         <div class="device-info">
                             <div class="device-title">{{ device[1] }}{{ device[2] }}</div>
                             <div class="device-details">{{ all_areas.find(area => area[0] === device[3])?.[1] }} |
@@ -94,12 +94,31 @@
     // 定义设备图标对象
     const deviceIcons : DeviceIcons = {
         "搅拌机": 'static/device/stir.svg',
+        "搅拌机1": 'static/device/stir_1.svg',
+        "搅拌机2": 'static/device/stir_2.svg',
         "加药泵": 'static/device/dosing.svg',
-        "防腐泵": 'static/device/waterPump.svg',
-        "风机": 'static/device/fan.svg',
-        "PH计": 'static/device/PH.svg',
-        "氨气传感器": 'static/device/NH3.svg',
-        "甲烷传感器": 'static/device/CH4.svg',
+        "加药泵1": 'static/device/dosing_1.svg',
+        "加药泵2": 'static/device/dosing_2.svg',        
+        "防腐泵1": 'static/device/waterPump_1.svg',
+        "防腐泵2": 'static/device/waterPump_2.svg',
+        "防腐泵3": 'static/device/waterPump.svg',
+        "风机null": 'static/device/fan.svg',
+        "PH计1": 'static/device/PH_1.svg',
+        "PH计2": 'static/device/PH_2.svg',
+        "氨气传感器1": 'static/device/NH3.svg',
+        "甲烷传感器1": 'static/device/CH4.svg',
+        "氨气传感器2": 'static/device/NH3.svg',
+        "甲烷传感器2": 'static/device/CH4.svg',
+        "氨气传感器3": 'static/device/NH3.svg',
+        "甲烷传感器3": 'static/device/CH4.svg',
+        "氨气传感器4": 'static/device/NH3.svg',
+        "甲烷传感器4": 'static/device/CH4.svg',
+        "氨气传感器5": 'static/device/NH3.svg',
+        "甲烷传感器5": 'static/device/CH4.svg',
+        "氨气传感器6": 'static/device/NH3.svg',
+        "甲烷传感器6": 'static/device/CH4.svg',
+        "氨气传感器7": 'static/device/NH3.svg',
+        "甲烷传感器7": 'static/device/CH4.svg',
     };
 
     function getDeviceIconUrl(device_name : string) {

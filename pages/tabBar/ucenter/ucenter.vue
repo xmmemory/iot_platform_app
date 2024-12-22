@@ -74,7 +74,7 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_get_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
     import { login_status, func_login } from "@/common/mutual/auth.ts"
 
     const system_info = uni.getSystemInfoSync();
@@ -83,6 +83,7 @@
     const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
     const auth_password = ref<string>(uni.getStorageSync('auth_password'));
     let progress = ref(0)
+    var updating = false;
 
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
@@ -122,35 +123,68 @@
         // });
     }
 
-    function checkUpdate() {
-        request_get_simu_ws("index", handleMessage_res);
-        // 获取当前版本号
-        const currentVersion = plus.runtime.version;
-        const latest_version = plus.runtime.version;
+    function handleMessage_projects_checkUpdate(res: { data: { latest_version: any[][]; }; }) {
+        const current_version = plus.runtime.version;
+        const latest_version = res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
-        const download_url = "http://49.232.133.59:7500/download/apk.apk"
-        // uni.showToast({
-        //     title: '当前版本: ' + currentVersion,
-        //     icon: "none",
-        //     mask: true,
-        //     duration: 1000
-        // });
-        // 提示用户更新
-        uni.showModal({
-            title: '有新版本啦！',
-            content: `最新版本：${latest_version}\n更新内容：${release_notes}`,
-            confirmText: '去更新',
-            cancelText: '暂不更新',
-            success: (res) => {
-                if (res.confirm) {
-                    // 下载并安装更新
-                    downloadAndInstallUpdate(download_url);
+        console.log("有新版本更新", current_version, latest_version);
+        if (compareVersions(latest_version, current_version) > 0) {// 提示用户更新
+            uni.showModal({
+                title: '有新版本啦！',
+                content: `最新版本：${latest_version}\n更新内容：${release_notes}`,
+                confirmText: '去更新',
+                cancelText: '暂不更新',
+                success: (res) => {
+                    if (res.confirm) {                        
+                        // 下载并安装更新
+                        const download_url = "http://49.232.133.59:7500/download/" + latest_version + ".apk"
+                        console.log(download_url);
+                        downloadAndInstallUpdate(download_url);
+                    }
                 }
-            }
-        });
+            });
+        }
+        else {
+            uni.showToast({
+                title: "已是最新版本",
+                icon: "none",
+                mask: true,
+                duration: 1000
+            });
+            updating  = false;
+        }
     }
 
-    function downloadAndInstallUpdate(downloadUrl) {
+    function compareVersions(version1, version2) {
+        const v1Parts = version1.split('.').map(Number);  // 将版本号按 "." 分割并转换为数字数组
+        const v2Parts = version2.split('.').map(Number);  // 同上
+
+        // 比较每一部分
+        for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+            const v1 = v1Parts[i] || 0;  // 如果某一部分不存在，则视为 0
+            const v2 = v2Parts[i] || 0;
+
+            if (v1 > v2) return 1;  // version1 较大
+            if (v1 < v2) return -1; // version2 较大
+        }
+
+        return 0;  // 版本相同
+    }
+
+    function checkUpdate() {
+        if(updating){
+            uni.showToast({
+                title: "正在更新请稍等",
+                icon: "none",
+                mask: true,
+                duration: 1000
+            });
+        }
+        updating  = true;
+        request_post_simu_ws("getVersion", { username: auth_userName.value }, handleMessage_projects_checkUpdate);
+    }
+
+    function downloadAndInstallUpdate(downloadUrl : string) {
         console.log("Starting download from:", downloadUrl);
 
         // 初始化进度
@@ -284,7 +318,7 @@
         margin-bottom: 20px;
         /* 为每个按钮添加底部外边距 */
     }
-    
+
     .progress-bar {
         width: 100%;
         height: 10px;
@@ -293,11 +327,10 @@
         overflow: hidden;
         margin-bottom: 10px;
     }
-    
+
     .progress {
         height: 100%;
         background-color: #4caf50;
         transition: width 0.3s ease;
     }
-
 </style>

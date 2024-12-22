@@ -120,6 +120,7 @@
                 var_type: item.var_type,
                 var_permission: item.var_permission,
                 device_id: devicd_id.value,
+                var_full_code: codeMapping[item.var_type] + item.var_code,
             }, handleMessage_modifyRes);
         }
         else {
@@ -130,6 +131,7 @@
                 var_type: item.var_type,
                 var_permission: item.var_permission,
                 device_id: devicd_id.value,
+                var_full_code: codeMapping[item.var_type] + item.var_code,
             }, handleMessage_modifyRes);
         }
     };
