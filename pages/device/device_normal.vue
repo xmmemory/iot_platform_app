@@ -54,18 +54,16 @@
         // special var.
         if (item.var_name.includes('频率')) {
             return '当前数值：' + formatValue(item.latest_value) + 'Hz';
-        }
-        else if (item.var_name.includes('电流')) {
+        } else if (item.var_name.includes('电流')) {
             return '当前数值：' + formatValue(item.latest_value) + 'A';
-        }
-        else if (item.var_name.includes('电压')) {
+        } else if (item.var_name.includes('电压')) {
             return '当前数值：' + formatValue(item.latest_value) + 'V';
-        }
-        else if (item.var_name.includes('功率')) {
+        } else if (item.var_name.includes('功率')) {
             return '当前数值：' + formatValue(item.latest_value) + 'KW';
-        }
-        else if (item.var_name.includes('时间设定')) {
+        } else if (item.var_name.includes('时间设定')) {
             return '当前数值：' + formatValue(item.latest_value) + '分钟';
+        } else if (item.var_name.includes('电能')) {
+            return '当前数值：' + formatValue(item.latest_value) + 'kw/h';
         }
 
         // 否则，返回 '当前数值：' + 格式化数值

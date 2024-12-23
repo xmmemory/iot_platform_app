@@ -66,17 +66,12 @@
     "subPackages": [{
             "root": "pages/device",
             "pages": [{
-                "path": "device_detail",
+                "path": "device_air",
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
             }, {
-                "path": "device_detail_system",
-                "style": {
-                    "navigationBarTitleText": "设备详情"
-                }
-            }, {
-                "path": "device_detail_normal",
+                "path": "device_normal",
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }

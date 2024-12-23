@@ -28,3 +28,5 @@ npm-debug.log*
 unpackage/cache
 unpackage/dist
 unpackage/release
+
+.history/
