@@ -76,16 +76,11 @@
                     "navigationBarTitleText": "设备详情"
                 }
             }, {
-                "path": "device_detail_stir",
+                "path": "device_detail_normal",
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
-            }, {
-                "path": "device_detail_PH",
-                "style": {
-                    "navigationBarTitleText": "设备详情"
-                }
-            }, {
+            },{
                 "path": "device_picker",
                 "style": {
                     "navigationBarTitleText": "设备详情"

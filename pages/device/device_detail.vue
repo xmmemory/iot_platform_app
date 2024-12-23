@@ -83,13 +83,13 @@
                     <template v-else-if="item.var_name.includes('频率') ">
                         <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
                             parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'Hz'"
-                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                            :clickable="true"></uni-list-chat>
+                            avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
+                            @click="inputValue(item.var_full_code)" :clickable="true"></uni-list-chat>
                     </template>
                     <template v-else-if="item.var_name.includes('补偿') ">
                         <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
                             parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'mg/m3'"
-                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                            avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
                             :clickable="true"></uni-list-chat>
                     </template>
                     <template v-else>

@@ -199,7 +199,7 @@
     };
 
     const goToDevicePage = (device : { id : any; device_name : any; status : any; area : any; }) => {
-        let url = `/pages/device/device_detail?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+        let url = `/pages/device/device_detail_normal?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
             ? "未指定分区"
             : all_areas.value.find(area => area[0] === device[3])?.[1]
             }`;
@@ -209,18 +209,12 @@
                 ? "未指定分区"
                 : all_areas.value.find(area => area[0] === device[3])?.[1]
                 }`;
-        } else if (device[1] == "搅拌机" || device[1] == "防腐泵") {
-            url = `/pages/device/device_detail_stir?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
-                ? "未指定分区"
-                : all_areas.value.find(area => area[0] === device[3])?.[1]
-                }`;
-        }else if (device[1] == "PH计") {
-            url = `/pages/device/device_detail_PH?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+        } else if (device[1] == "氨气传感器" || device[1] == "甲烷传感器") {
+            url = `/pages/device/device_detail?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
                 ? "未指定分区"
                 : all_areas.value.find(area => area[0] === device[3])?.[1]
                 }`;
         }
-
         uni.navigateTo({
             url: url,
         });
