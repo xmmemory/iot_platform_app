@@ -30,6 +30,9 @@
                         <template v-else-if="var_name.includes('氨气')">
                             <text class="var-value">{{item.value}}mg/m3</text>
                         </template>
+                        <template v-else-if="var_name.includes('频率')">
+                            <text class="var-value">{{item.value}}Hz</text>
+                        </template>
                         <template v-else>
                             <text class="var-value">
                                 <template v-if="item.value === 'True'">开启</template>

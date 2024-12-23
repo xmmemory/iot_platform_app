@@ -66,18 +66,36 @@
     "subPackages": [{
             "root": "pages/device",
             "pages": [{
-                    "path": "device_detail",
-                    "style": {
-                        "navigationBarTitleText": "设备详情"
-                    }
-                },
-                {
-                    "path": "device_record",
-                    "style": {
-                        "navigationBarTitleText": "设备记录"
-                    }
+                "path": "device_detail",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
                 }
-            ]
+            }, {
+                "path": "device_detail_system",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
+                }
+            }, {
+                "path": "device_detail_stir",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
+                }
+            }, {
+                "path": "device_detail_PH",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
+                }
+            }, {
+                "path": "device_picker",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
+                }
+            },{
+                "path": "device_record",
+                "style": {
+                    "navigationBarTitleText": "设备记录"
+                }
+            }]
         },
         {
             "root": "pages/manage",

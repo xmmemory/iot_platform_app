@@ -199,10 +199,28 @@
     };
 
     const goToDevicePage = (device : { id : any; device_name : any; status : any; area : any; }) => {
-        const url = `/pages/device/device_detail?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+        let url = `/pages/device/device_detail?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
             ? "未指定分区"
             : all_areas.value.find(area => area[0] === device[3])?.[1]
             }`;
+        console.log(device[1])
+        if (device[1] == "总系统") {
+            url = `/pages/device/device_detail_system?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+                ? "未指定分区"
+                : all_areas.value.find(area => area[0] === device[3])?.[1]
+                }`;
+        } else if (device[1] == "搅拌机" || device[1] == "防腐泵") {
+            url = `/pages/device/device_detail_stir?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+                ? "未指定分区"
+                : all_areas.value.find(area => area[0] === device[3])?.[1]
+                }`;
+        }else if (device[1] == "PH计") {
+            url = `/pages/device/device_detail_PH?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+                ? "未指定分区"
+                : all_areas.value.find(area => area[0] === device[3])?.[1]
+                }`;
+        }
+
         uni.navigateTo({
             url: url,
         });

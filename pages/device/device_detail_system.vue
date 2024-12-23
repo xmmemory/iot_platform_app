@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
+        <page-head :title="deviceName"></page-head>
         <template v-for=" (item, index) in device_vars" :key="item.var_id">
             <template v-if="item.var_permission === 'R'">
                 <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
@@ -46,6 +46,12 @@
                                 avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
                                 :clickable="true"></uni-list-chat>
                         </template>
+                        <template v-else-if="item.var_name.includes('总电能') ">
+                            <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                                parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'kw/h'"
+                                avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                                :clickable="true"></uni-list-chat>
+                        </template>
                         <template v-else>
                             <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
                                     parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
@@ -80,12 +86,6 @@
                             avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
                             :clickable="true"></uni-list-chat>
                     </template>
-                    <template v-else-if="item.var_name.includes('频率') ">
-                        <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
-                            parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'Hz'"
-                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                            :clickable="true"></uni-list-chat>
-                    </template>
                     <template v-else-if="item.var_name.includes('补偿') ">
                         <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
                             parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'mg/m3'"
@@ -117,7 +117,7 @@
                         :time="item.last_datetime" :clickable="true" @click="changeStatus"></uni-list-chat>
                 </template>
                 <template v-else>
-                    <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
+                    <uni-list-chat :avatar-circle="true" :key="item.var_id" title="输入修改数值"
                         avatar="/static/device/device_default.png" :note="codeMapping[item.var_type] + item.var_code"
                         :time="item.last_datetime" :clickable="true"
                         @click="inputValue(item.var_full_code)"></uni-list-chat>
@@ -248,7 +248,8 @@
     }
 
     function goToDevicePage(name : any, type : any, var_full_code : any) {
-        const url = `/pages/device/device_record?var_full_code=${var_full_code}&name=${name}&type=${type}&deviceName=${deviceName.value}&deviceArea=${deviceArea.value}`;
+        let url = `/pages/device/device_record?var_full_code=${var_full_code}&name=${name}&type=${type}&deviceName=${deviceName.value}&deviceArea=${deviceArea.value}`;
+        // url = `/pages/device/device_picker`;
         time_run = false;
         uni.navigateTo({
             url: url,
