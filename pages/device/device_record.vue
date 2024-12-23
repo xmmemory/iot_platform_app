@@ -15,14 +15,20 @@
                         <template v-if="var_name === '运行状态'">
                             <text class="var-value">{{ varStatusMapping[item.value] || '未知状态' }}</text>
                         </template>
-                        <template v-else-if="var_name === '运行状态2'">
-                            <text class="var-value">{{ varStatusMapping[item.value] || '未知状态' }}</text>
+                        <template v-else-if="var_name.includes('电压')">
+                            <text class="var-value">{{item.value}}V</text>
                         </template>
-                        <template v-else-if="var_name === '运行状态3'">
-                            <text class="var-value">{{ varStatusMapping[item.value] || '未知状态' }}</text>
+                        <template v-else-if="var_name.includes('电流')">
+                            <text class="var-value">{{item.value}}A</text>
                         </template>
-                        <template v-else-if="var_name === '运行状态4'">
-                            <text class="var-value">{{ varStatusMapping[item.value] || '未知状态' }}</text>
+                        <template v-else-if="var_name.includes('时间')">
+                            <text class="var-value">{{item.value}}分钟</text>
+                        </template>
+                        <template v-else-if="var_name.includes('甲烷')">
+                            <text class="var-value">{{item.value}}mg/m3</text>
+                        </template>
+                        <template v-else-if="var_name.includes('氨气')">
+                            <text class="var-value">{{item.value}}mg/m3</text>
                         </template>
                         <template v-else>
                             <text class="var-value">

@@ -25,10 +25,34 @@
                             :clickable="true"></uni-list-chat>
                     </template>
                     <template v-else>
-                        <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                            :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
-                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                            :clickable="true"></uni-list-chat>
+                        <template v-if="item.var_name === '运行状态'">
+                            <text class="var-value">{{ varStatusMapping[item.var_name] || '未知状态' }}</text>
+                        </template>
+                        <template v-else-if="item.var_name.includes('电压')">
+                            <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? 
+                                parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'V'"
+                                avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                                :clickable="true"></uni-list-chat>
+                        </template>
+                        <template v-else-if="item.var_name.includes('电流')">
+                            <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                                parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'A'"
+                                avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                                :clickable="true"></uni-list-chat>
+                        </template>
+                        <template v-else-if="item.var_name.includes('实际') ">
+                            <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                                parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'mg/m3'"
+                                avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                                :clickable="true"></uni-list-chat>
+                        </template>
+                        <template v-else>
+                            <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                                    parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
+                                avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                                :clickable="true"></uni-list-chat>
+                        </template>
+
                     </template>
                 </template>
             </template>
@@ -50,10 +74,24 @@
                         @click="changeStatus(item.var_full_code, varBoolMapping[item.latest_value])"></uni-list-chat>
                 </template>
                 <template v-else>
-                    <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
-                        avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
-                        :clickable="true" @click="inputValue(item.var_full_code)"></uni-list-chat>
+                    <template v-if="item.var_name.includes('量程')">
+                        <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                            parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'mg/m3'"
+                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                            :clickable="true"></uni-list-chat>
+                    </template>
+                    <template v-else-if="item.var_name.includes('补偿') ">
+                        <uni-list-chat :avatar-circle="true" :key="item.var_id" :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ?
+                            parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))+'mg/m3'"
+                            avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
+                            :clickable="true"></uni-list-chat>
+                    </template>
+                    <template v-else>
+                        <uni-list-chat :avatar-circle="true" :key="item.var_id"
+                            :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
+                            avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
+                            :clickable="true" @click="inputValue(item.var_full_code)"></uni-list-chat>
+                    </template>
                 </template>
             </template>
 
