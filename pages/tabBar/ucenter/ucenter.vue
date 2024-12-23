@@ -24,7 +24,6 @@
 
 
             <button size="default" type="primary" class="navigator-button" @click="call_us">联系我们</button>
-
             <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
             <button v-if="auth_userName.includes('leon')" type="warn" @click="clearTotalData">清空缓存数据</button>
@@ -61,6 +60,8 @@
             <view class="auth_input">
                 <button size="default" type="primary" @click="login"
                     :disabled="!(auth_password.length >= 3) && !(auth_userName.length >= 3)">登录</button>
+                <button size="default" type="primary" style="margin-top: 20rpx; margin-bottom: 10rpx;"
+                    @click="checkUpdate">检查更新</button>
             </view>
 
             <!-- 链接导航 -->
@@ -87,12 +88,12 @@
 
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
-            func_login(auth_userName, auth_password);
+            login();
         }
     })
 
     // 登录逻辑
-    const login = () => {
+    function login() {
         if (!auth_userName.value || !auth_password.value) {
             uni.showToast({
                 title: '请输入用户名和密码',
@@ -100,8 +101,22 @@
             });
             return;
         }
-        // login.
-        func_login(auth_userName, auth_password);
+        // 获取当前时间
+        let currentDate = new Date();
+        // 指定日期，格式为 "YYYY-MM-DD"
+        let targetDate = new Date("2025-1-1");
+        // 判断当前时间是否超过目标日期
+        if (currentDate > targetDate) {
+            uni.showToast({
+                title: "请更新最新版本!",
+                icon: "error",
+                mask: true,
+                duration: 3000
+            });
+        }
+        else {
+            func_login(auth_userName, auth_password);
+        }
     };
 
     function call_us() {
@@ -123,7 +138,7 @@
         // });
     }
 
-    function handleMessage_projects_checkUpdate(res: { data: { latest_version: any[][]; }; }) {
+    function handleMessage_projects_checkUpdate(res : { data : { latest_version : any[][]; }; }) {
         const current_version = plus.runtime.version;
         const latest_version = res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
@@ -135,7 +150,7 @@
                 confirmText: '去更新',
                 cancelText: '暂不更新',
                 success: (res) => {
-                    if (res.confirm) {                        
+                    if (res.confirm) {
                         // 下载并安装更新
                         const download_url = "http://49.232.133.59:7500/download/" + latest_version + ".apk"
                         console.log(download_url);
@@ -151,7 +166,7 @@
                 mask: true,
                 duration: 1000
             });
-            updating  = false;
+            updating = false;
         }
     }
 
@@ -172,7 +187,7 @@
     }
 
     function checkUpdate() {
-        if(updating){
+        if (updating) {
             uni.showToast({
                 title: "正在更新请稍等",
                 icon: "none",
@@ -180,7 +195,7 @@
                 duration: 1000
             });
         }
-        updating  = true;
+        updating = true;
         request_post_simu_ws("getVersion", { username: auth_userName.value }, handleMessage_projects_checkUpdate);
     }
 

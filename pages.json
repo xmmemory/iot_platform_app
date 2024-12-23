@@ -72,7 +72,10 @@
                     }
                 },
                 {
-                    "path": "device_detail_1"
+                    "path": "device_record",
+                    "style": {
+                        "navigationBarTitleText": "设备记录"
+                    }
                 }
             ]
         },

@@ -1,13 +1,17 @@
 <template>
     <view class="container">
         <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
-        <template v-for="(item, index) in device_vars" :key="item.var_id">
+        <template v-for=" (item, index) in device_vars" :key="item.var_id">
             <template v-if="item.var_permission === 'R'">
-                <div
-                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx;">
-                    {{ item.var_name }}
-                </div>
-                <!-- <button type="primary" size="mini">read</button> -->
+                <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
+                    <view class="text"
+                        style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx; width: 300rpx;">
+                        {{ item.var_name }}
+                    </view>
+                    <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
+                    <button @click="goToDevicePage(item.var_name,item.var_type, item.var_full_code)" type="primary"
+                        size="mini" style="width: 320rpx; font-size: 17px;">历史记录查询</button>
+                </view>
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
                         :title="'当前状态：' + varBoolMapping[item.latest_value]" avatar="/static/device/device_default.png"
@@ -18,24 +22,27 @@
                         <uni-list-chat :avatar-circle="true" :key="item.var_id"
                             :title="'当前状态：' + varStatusMapping[item.latest_value]"
                             avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                            :clickable="false"></uni-list-chat>
+                            :clickable="true"></uni-list-chat>
                     </template>
                     <template v-else>
                         <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                            :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
+                            :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
                             avatar="/static/device/device_default.png" note="只读" :time="item.last_datetime"
-                            :clickable="false"></uni-list-chat>
+                            :clickable="true"></uni-list-chat>
                     </template>
-
                 </template>
             </template>
 
             <template v-else-if="item.var_permission === 'R/W'">
-                <!-- <button type="primary" size="mini">read&write</button> -->
-                <div
-                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx;">
-                    {{ item.var_name }}
-                </div>
+                <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
+                    <view class="text"
+                        style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx; width: 300rpx;">
+                        {{ item.var_name }}
+                    </view>
+                    <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
+                    <button @click="goToDevicePage(item.var_name,item.var_type, item.var_full_code)" type="primary"
+                        size="mini" style="width: 320rpx; font-size: 17px;">历史记录查询</button>
+                </view>
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
                         :title="'当前状态：' + varBoolMapping[item.latest_value]" avatar="/static/device/device_default.png"
@@ -44,18 +51,22 @@
                 </template>
                 <template v-else>
                     <uni-list-chat :avatar-circle="true" :key="item.var_id"
-                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(3))"
+                        :title="'当前数值：' + (parseFloat(item.latest_value) % 1 === 0 ? parseInt(item.latest_value) : parseFloat(item.latest_value).toFixed(1))"
                         avatar="/static/device/device_default.png" note="可控" :time="item.last_datetime"
                         :clickable="true" @click="inputValue(item.var_full_code)"></uni-list-chat>
                 </template>
             </template>
 
             <template v-else-if="item.var_permission === 'W'">
-                <div
-                    style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx;">
-                    {{ item.var_name }}
-                </div>
-                <!-- <button type="primary" size="mini">write</button> -->
+                <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
+                    <view class="text"
+                        style="text-align: left; font-size: 22px; font-weight: bold; margin-top: 20rpx; margin-bottom: 10rpx; width: 300rpx;">
+                        {{ item.var_name }}
+                    </view>
+                    <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
+                    <button @click="goToDevicePage(item.var_name,item.var_type, item.var_full_code)" type="primary"
+                        size="mini" style="width: 300rpx; font-size: 17px;">历史记录查询</button>
+                </view>
                 <template v-if="item.var_type === 'BOOL'">
                     <uni-list-chat :avatar-circle="true" :key="item.var_id" title=""
                         avatar="/static/device/device_default.png" :note="codeMapping[item.var_type] + item.var_code"
@@ -82,6 +93,7 @@
     const deviceName = ref<string | null>(null);
     const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
+    let time_run = true;
 
     function changeStatus(var_full_code : any, var_status : string) {
         // console.log(var_full_code, var_status)
@@ -115,7 +127,7 @@
         ;
     }
 
-    function inputValue(var_full_code: any) {
+    function inputValue(var_full_code : any) {
         uni.showModal({
             title: '数据修改',
             editable: true,
@@ -134,7 +146,7 @@
                     console.log('用户点击取消');
                 }
             }
-        });        
+        });
     }
 
     // 获取页面参数并设置标题
@@ -146,10 +158,12 @@
             request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             restartMonitorChange(INTERVAL);
         }
+        time_run = true;
     });
 
     onUnload(() => {
-        console.log("onUnload")
+        // console.log("onUnload")
+        time_run = false;
         if (monitorRecordChange) {
             clearInterval(monitorRecordChange);
             monitorRecordChange = null;
@@ -171,7 +185,9 @@
 
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
-            request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            if (time_run) {
+                request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            }
         }, interval_ms);
     }
 
@@ -186,6 +202,14 @@
             startMonitorChange(interval_ms);
         }
     }
+
+    function goToDevicePage(name : any, type : any, var_full_code : any) {
+        const url = `/pages/device/device_record?var_full_code=${var_full_code}&name=${name}&type=${type}&deviceName=${deviceName.value}&deviceArea=${deviceArea.value}`;
+        time_run = false;
+        uni.navigateTo({
+            url: url,
+        });
+    };
 </script>
 
 <style scoped>

@@ -93,32 +93,33 @@
 
     // 定义设备图标对象
     const deviceIcons : DeviceIcons = {
-        "搅拌机": 'static/device/stir.svg',
-        "搅拌机1": 'static/device/stir_1.svg',
-        "搅拌机2": 'static/device/stir_2.svg',
-        "加药泵": 'static/device/dosing.svg',
-        "加药泵1": 'static/device/dosing_1.svg',
-        "加药泵2": 'static/device/dosing_2.svg',        
-        "防腐泵1": 'static/device/waterPump_1.svg',
-        "防腐泵2": 'static/device/waterPump_2.svg',
-        "防腐泵3": 'static/device/waterPump.svg',
-        "风机null": 'static/device/fan.svg',
-        "PH计1": 'static/device/PH_1.svg',
-        "PH计2": 'static/device/PH_2.svg',
-        "氨气传感器1": 'static/device/NH3.svg',
-        "甲烷传感器1": 'static/device/CH4.svg',
-        "氨气传感器2": 'static/device/NH3.svg',
-        "甲烷传感器2": 'static/device/CH4.svg',
-        "氨气传感器3": 'static/device/NH3.svg',
-        "甲烷传感器3": 'static/device/CH4.svg',
-        "氨气传感器4": 'static/device/NH3.svg',
-        "甲烷传感器4": 'static/device/CH4.svg',
-        "氨气传感器5": 'static/device/NH3.svg',
-        "甲烷传感器5": 'static/device/CH4.svg',
-        "氨气传感器6": 'static/device/NH3.svg',
-        "甲烷传感器6": 'static/device/CH4.svg',
-        "氨气传感器7": 'static/device/NH3.svg',
-        "甲烷传感器7": 'static/device/CH4.svg',
+        "搅拌机": 'http://49.232.133.59:7500/download/img/device/stir.svg',
+        "搅拌机1": 'http://49.232.133.59:7500/download/img/device/stir_1.svg',
+        "搅拌机2": 'http://49.232.133.59:7500/download/img/device/stir_2.svg',
+        "加药泵": 'http://49.232.133.59:7500/download/img/device/dosing.svg',
+        "加药泵1": 'http://49.232.133.59:7500/download/img/device/dosing_1.svg',
+        "加药泵2": 'http://49.232.133.59:7500/download/img/device/dosing_2.svg',
+        "防腐泵1": 'http://49.232.133.59:7500/download/img/device/waterPump_1.svg',
+        "防腐泵2": 'http://49.232.133.59:7500/download/img/device/waterPump_2.svg',
+        "防腐泵3": 'http://49.232.133.59:7500/download/img/device/waterPump_3.svg',
+        "风机null": 'http://49.232.133.59:7500/download/img/device/fan.svg',
+        "PH计1": 'http://49.232.133.59:7500/download/img/device/PH_1.svg',
+        "PH计2": 'http://49.232.133.59:7500/download/img/device/PH_2.svg',
+        "氨气传感器1": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器2": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器3": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器4": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器5": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器6": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "氨气传感器7": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
+        "甲烷传感器1": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器2": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器3": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器4": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器5": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器6": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "甲烷传感器7": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
+        "总系统null": 'http://49.232.133.59:7500/download/img/device/system.svg'
     };
 
     function getDeviceIconUrl(device_name : string) {
@@ -197,10 +198,8 @@
         showTabDropdown.value = !showTabDropdown.value;
     };
 
-    all_areas
-
     const goToDevicePage = (device : { id : any; device_name : any; status : any; area : any; }) => {
-        const url = `/pages/device/device_detail?id=${device[0]}&name=${device[1] + device[2]}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
+        const url = `/pages/device/device_detail?id=${device[0]}&name=${device[1]}${device[2] ? device[2] : ''}&area=${all_areas.value.find(area => area[0] === device[3])?.[1] === "全部设备"
             ? "未指定分区"
             : all_areas.value.find(area => area[0] === device[3])?.[1]
             }`;
