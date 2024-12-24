@@ -42,7 +42,8 @@
                     </div>
                     <div v-else v-for="(device, index) in filteredDevices" :key="index" class="device-card"
                         @click="goToDevicePage(device)">
-                        <img :src="getDeviceIconUrl(device[1]+device[2])" alt="暂无图标" class="device-icon" />
+                        <img :src="'http://app.lvrulanbio.com:7501/download/img/device/' + device[4] + '.svg'"
+                            alt="暂无图标" class="device-icon" @error="handleImageError($event)" />
                         <div class="device-info">
                             <div class="device-title">{{ device[1] }}{{ device[2] }}</div>
                             <div class="device-details">{{ all_areas.find(area => area[0] === device[3])?.[1] }} |
@@ -70,9 +71,6 @@
     import { login_status } from "@/common/mutual/auth.ts"
     import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
 
-    const auth_userName = ref<string>(uni.getStorageSync('auth_userName'));
-    const auth_password = ref<string>(uni.getStorageSync('auth_password'));
-
     // project data.
     let all_projects = ref([
         { project_id: 1, project_name: "项目1" },
@@ -86,46 +84,9 @@
         ;
     })
 
-    // 定义设备图标类型
-    type DeviceIcons = {
-        [key : string] : string;
-    };
-
-    // 定义设备图标对象
-    const deviceIcons : DeviceIcons = {
-        "搅拌机": 'http://49.232.133.59:7500/download/img/device/stir.svg',
-        "搅拌机1": 'http://49.232.133.59:7500/download/img/device/stir_1.svg',
-        "搅拌机2": 'http://49.232.133.59:7500/download/img/device/stir_2.svg',
-        "加药泵": 'http://49.232.133.59:7500/download/img/device/dosing.svg',
-        "加药泵1": 'http://49.232.133.59:7500/download/img/device/dosing_1.svg',
-        "加药泵2": 'http://49.232.133.59:7500/download/img/device/dosing_2.svg',
-        "防腐泵1": 'http://49.232.133.59:7500/download/img/device/waterPump_1.svg',
-        "防腐泵2": 'http://49.232.133.59:7500/download/img/device/waterPump_2.svg',
-        "防腐泵3": 'http://49.232.133.59:7500/download/img/device/waterPump_3.svg',
-        "风机null": 'http://49.232.133.59:7500/download/img/device/fan.svg',
-        "PH计1": 'http://49.232.133.59:7500/download/img/device/PH_1.svg',
-        "PH计2": 'http://49.232.133.59:7500/download/img/device/PH_2.svg',
-        "氨气传感器1": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器2": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器3": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器4": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器5": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器6": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "氨气传感器7": 'http://49.232.133.59:7500/download/img/device/NH3_1.svg',
-        "甲烷传感器1": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器2": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器3": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器4": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器5": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器6": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "甲烷传感器7": 'http://49.232.133.59:7500/download/img/device/CH4_2.svg',
-        "总系统null": 'http://49.232.133.59:7500/download/img/device/system.svg'
-    };
-
-    function getDeviceIconUrl(device_name : string) {
-        // console.log(device_name)
-        // 如果 device Icons 对象中存在 device_name，则返回对应的 URL，否则返回默认图标
-        return deviceIcons[device_name] || 'static/img/icon_device/device_default.png';
+    function handleImageError(event : any) {
+        // 当图片加载失败时，替换为默认图片地址
+        event.target.src = 'static/img/icon_device/device_default.png';
     }
 
     onShow(() => {
@@ -155,7 +116,7 @@
     }
 
     function handleMessage_devices(res : { data : any; }) {
-        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_num, item.area_id]);
+        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_num, item.area_id, item.icon_addr]);
         // console.log('Received msg all_devices:', all_devices);
         uni.hideToast();
     }
