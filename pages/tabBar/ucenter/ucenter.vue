@@ -26,7 +26,8 @@
             <button size="default" type="primary" class="navigator-button" @click="call_us">联系我们</button>
             <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
-            <button v-if="auth_userName.includes('leon')" type="warn" @click="clearTotalData">清空缓存数据</button>
+            <button v-if="auth_userName.includes('leon')" size="default" type="warn" class="navigator-button"
+                @click="clearTotalData">清空缓存数据</button>
 
             <template v-if="progress > 0">
                 <p>下载进度: {{ progress }}%</p>
@@ -330,7 +331,7 @@
     .navigator-button {
         width: 90%;
         /* 根据需要调整宽度 */
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         /* 为每个按钮添加底部外边距 */
     }
 

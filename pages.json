@@ -70,6 +70,11 @@
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
+            },{
+                "path": "device_system",
+                "style": {
+                    "navigationBarTitleText": "设备详情"
+                }
             }, {
                 "path": "device_normal",
                 "style": {

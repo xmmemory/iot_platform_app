@@ -6,10 +6,15 @@
                 <text class="device-name">{{deviceName}} | </text>
                 <text class="device-area">{{deviceArea}}</text>
             </view>
-
             <!-- 记录列表 -->
             <view class="layout">
-                <view class="row" v-for="(item) in var_record" :key="item.created_at">
+                <!-- <uni-section :title="'数据范围筛选'" type="line"></uni-section> -->
+                <text class="data-slecte-title">数据范围筛选:</text>
+                <view class="example-body">
+                    <uni-datetime-picker v-model="datetimeRange" type="datetimerange" rangeSeparator="至" />
+                    <view style="margin-bottom: 30rpx;"></view>
+                </view>
+                <view class="row" v-for="(item) in filteredRecords" :key="item.created_at">
                     <view class="title">
                         <text class="var-name">{{var_name}}:</text>
                         <template v-if="var_name === '运行状态'">
@@ -53,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
     import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
     import { varStatusMapping } from '@/common/mapping.ts'
@@ -64,6 +69,49 @@
     const var_name = ref<string | null>(null);
     const var_type = ref<string | null>(null);
     let var_record = ref(null);
+
+    // 过滤函数
+    const filteredRecords = computed(() => {
+        const [start, end] = datetimeRange.value.map(date => new Date(date).getTime())
+        return var_record.value.filter(item => {
+            const createdAt = new Date(item.created_at).getTime()
+            return createdAt >= start && createdAt <= end
+        })
+    })
+
+    const datetimeRange = ref([
+        getDateTime(Date.now() - 5 * 24 * 3600000),
+        getDateTime(Date.now() + 5 * 24 * 3600000)
+    ])
+
+    function getDateTime(date) {
+        return `${getDate(date)} ${getTime(date)}`
+    }
+
+    function getDate(date) {
+        date = new Date(date)
+        const year = date.getFullYear()
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        return `${year}-${addZero(month)}-${addZero(day)}`
+    }
+
+    function getTime(date : string | number | Date) {
+        date = new Date(date)
+        const hour = date.getHours()
+        const minute = date.getMinutes()
+        const second = date.getSeconds()
+        // return `${addZero(hour)}:${addZero(minute)}` : `${addZero(hour)}:${addZero(minute)}:${addZero(second)}`
+        // return `${addZero(hour)}:${addZero(minute)}`
+        return `${addZero(hour)}:${addZero(minute)}:${addZero(second)}`
+    }
+
+    function addZero(num) {
+        if (num < 10) {
+            num = `0${num}`
+        }
+        return num
+    }
 
     // 获取页面参数并设置标题
     onLoad((options) => {
@@ -89,13 +137,12 @@
 
     function handleMessage_recordValue(res : { data : any; }) {
         var_record.value = res.data;
-        console.log('Received WebSocket message:', var_record);
         // 将 "T" 替换为 " ":
         var_record.value = var_record.value.map((item : any) => ({
             ...item,
             created_at: item.created_at.replace('T', ' '),
         }));
-        console.log('Received WebSocket message:', var_record);
+        // console.log('Received WebSocket message:', var_record);
     }
 
     let INTERVAL = 500; // 定时器间隔
@@ -152,6 +199,12 @@
         background-color: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
+    
+    .data-slecte-title{
+        font-size: 22px;
+        font-weight: bold;
+        color: #e67137;
+    }
 
     .title {
         display: flex;
@@ -164,7 +217,7 @@
         font-weight: bold;
         color: #333;
     }
-
+    
     .var-value {
         font-size: 24px;
         color: #1E90FF;

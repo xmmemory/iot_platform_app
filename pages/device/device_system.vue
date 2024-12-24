@@ -1,6 +1,34 @@
 <template>
     <view style="padding: 20px;">
         <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
+
+        <!-- <view class="uni-title uni-common-pl">时间选择器</view>
+        <view class="uni-list">
+            <view class="uni-list-cell">
+                <view class="uni-list-cell-left">
+                    开始时间
+                </view>
+                <view class="uni-list-cell-db">
+                    <picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
+                        <view class="uni-input">{{time}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="uni-list-cell">
+                <view class="uni-list-cell-left">
+                    结束时间
+                </view>
+                <view class="uni-list-cell-db">
+                    <picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
+                        <view class="uni-input">{{time}}</view>
+                    </picker>
+                </view>
+            </view>
+        </view>
+        <view class="uni-picker-tips">
+            注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中
+        </view> -->
+
         <template v-for="(item, index) in device_vars" :key="item.var_id">
             <!-- Device Info Row -->
             <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
@@ -33,6 +61,11 @@
     const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
     let time_run = true;
+    const time = ref()
+
+    function bindTimeChange(e : any) {
+        time.value = e.detail.value
+    }
 
     function handleClick(item : { var_type : string; var_full_code : any; latest_value : string | number; }) {
         if (item.var_type === 'BOOL') {

@@ -20,13 +20,3 @@ export const varStatusMapping = {
 };
 
 export const default_icon_addr = "/static/device/device_default.png";
-
-export const getNote = (permission: string) => {
-    if (permission === 'R/W' || permission === 'W') {
-        return '读写'
-    } else if (permission === 'R') {
-        return '只读';
-    } else {
-        return '未知权限'; // 如果没有权限或者其他值
-    }
-};

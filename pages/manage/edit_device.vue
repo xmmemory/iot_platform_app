@@ -8,15 +8,17 @@
                         <uni-easyinput v-model="moment_device.device_name" placeholder="请输入设备名称" />
                     </uni-forms-item>
                     <uni-forms-item label="设备序号" required>
-                        <uni-easyinput v-model="moment_device.device_num" placeholder="请输入设备序号" type="number"
-                            maxlength="2" />
+                        <uni-easyinput v-model="moment_device.device_num" placeholder="请输入设备序号" maxlength="2" />
                     </uni-forms-item>
                     <uni-forms-item label="所属区域" required>
                         <uni-data-checkbox v-model="moment_device.area_id" :localdata="all_areas" />
                     </uni-forms-item>
+                    <uni-forms-item label="图标名称" required>
+                        <uni-easyinput v-model="moment_device.icon_addr" placeholder="请输入图标名称" />
+                    </uni-forms-item>
                 </uni-forms>
                 <button type="primary" @click="submit(moment_device)"
-                    :disabled="!(moment_device.device_name) || !(moment_device.device_num)">提交</button>
+                    :disabled="!(moment_device.device_name)">提交</button>
             </view>
         </uni-section>
     </view>
@@ -32,14 +34,16 @@
 
     interface DeviceStr {
         device_name : string;
-        device_num : number;
+        device_num : string;
         area_id : number;
+        icon_addr : string;
     }
 
     let moment_device = ref<DeviceStr>({
         device_name: '',
-        device_num: 1,
+        device_num: '',
         area_id: 0,
+        icon_addr: '',
     });
 
     onLoad((options) => {
@@ -73,6 +77,7 @@
                 device_num: ref.device_num,
                 area_id: ref.area_id,
                 device_id: device_id.value,
+                icon_addr: ref.icon_addr,
             }, handleMessage_modifyRes);
         }
         else {
@@ -81,6 +86,7 @@
                 device_name: ref.device_name,
                 device_num: ref.device_num,
                 area_id: ref.area_id,
+                icon_addr: ref.icon_addr,
             }, handleMessage_modifyRes);
         }
     }
