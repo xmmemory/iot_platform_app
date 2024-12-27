@@ -76,7 +76,7 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { login_status, func_login } from "@/common/mutual/auth.ts"
 
     const system_info = uni.getSystemInfoSync();

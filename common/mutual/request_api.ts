@@ -1,6 +1,6 @@
 import { server_url } from "./server_parameter.ts"
 
-export function request_get_simu_ws(get_url : string, callback ?: (arg0 : any) => void) {
+export function request_get(get_url : string, callback ?: (arg0 : any) => void) {
     let header = {
         'Content-Type': 'application/json',
     };
@@ -11,10 +11,10 @@ export function request_get_simu_ws(get_url : string, callback ?: (arg0 : any) =
     } else {
         ;
     }
-    request_get(server_url + get_url, header, callback);
+    request_get_api(server_url + get_url, header, callback);
 }
 
-function request_get(url : string, header : { "Content-Type" : string; }, callback ?: (arg0 : any) => void) {
+function request_get_api(url : string, header : { "Content-Type" : string; }, callback ?: (arg0 : any) => void) {
     uni.request({
         url: url,
         method: 'GET',
@@ -27,7 +27,7 @@ function request_get(url : string, header : { "Content-Type" : string; }, callba
             if (callback) {
                 callback(res);
             }
-        },
+        },                
         fail: (res) => {
             console.log(res);
             uni.showToast({

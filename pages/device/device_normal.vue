@@ -1,36 +1,34 @@
 <template>
-    <view style="padding: 20px;">
-        <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
-        <template v-for="(item, index) in device_vars" :key="item.var_id">
-            <!-- Device Info Row -->
-            <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
-                <view class="var-name">
-                    {{ item.var_name }}
-                </view>
-                <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
-                <button @click="goToDevicePage(item.var_name, item.var_type, item.var_full_code)" type="primary"
-                    size="mini" style="width: 320rpx; font-size: 17px;">历史记录查询</button>
+    <device_title />
+    <template v-for="(item, index) in device_vars" :key="item.var_id">
+        <!-- Device Info Row -->
+        <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
+            <view class="var-name">
+                {{ item.var_name }}
             </view>
-            <!-- Current Value Display -->
-            <uni-list-chat :avatar-circle="true" :title="formatTitle(item)" :avatar="default_icon_addr"
-                :time="item.last_datetime"
-                :note="item.var_permission === 'R/W' || item.var_permission === 'W' ? '可控制' : '只读'"
-                :clickable="item.var_permission === 'R/W' || item.var_permission === 'W' ? true : false"
-                @click="handleClick(item)">
-            </uni-list-chat>
-        </template>
-    </view>
+            <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
+            <button @click="goToDevicePage(item.var_name, item.var_type, item.var_full_code)" type="primary" size="mini"
+                style="width: 320rpx; font-size: 17px;">历史记录查询</button>
+        </view>
+        <!-- Current Value Display -->
+        <uni-list-chat :avatar-circle="true" :title="formatTitle(item)" :avatar="default_icon_addr"
+            :time="item.last_datetime"
+            :note="item.var_permission === 'R/W' || item.var_permission === 'W' ? '可控制' : '只读'"
+            :clickable="item.var_permission === 'R/W' || item.var_permission === 'W' ? true : false"
+            @click="handleClick(item)">
+        </uni-list-chat>
+    </template>
 </template>
 
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { varBoolMapping, varStatusMapping, default_icon_addr } from '@/common/mapping.ts'
+    import { deviceName, deviceArea } from "@/components/device/device.ts"
+    import device_title from "@/components/device/device_title.vue";
 
     const device_id = ref<string | null>(null);
-    const deviceName = ref<string | null>(null);
-    const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
     let time_run = true;
 
@@ -193,6 +191,25 @@
 </script>
 
 <style scoped>
+    /* 页面标题 */
+    .header {
+        text-align: center;
+        padding: 20px 0;
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .device-name {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .device-area {
+        font-size: 28px;
+        color: #777;
+    }
+
     .container {
         padding: 20px;
     }

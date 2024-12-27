@@ -33,7 +33,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
     import { onShow, onLoad } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     // 定义响应式数据

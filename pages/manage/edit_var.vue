@@ -32,7 +32,7 @@
 <script setup lang="ts">
     import { ref, reactive } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     const devicd_id = ref<number | null>(null);

@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
     import { ref, reactive, nextTick } from 'vue';
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
     //
     const msgType = ref('success');

@@ -1,11 +1,7 @@
 <template>
     <view>
         <template v-if="Array.isArray(var_record)">
-            <!-- 标题 -->
-            <view class="header">
-                <text class="device-name">{{deviceName}} | </text>
-                <text class="device-area">{{deviceArea}}</text>
-            </view>
+            <device_title />
             <!-- 记录列表 -->
             <view class="layout">
                 <!-- <uni-section :title="'数据范围筛选'" type="line"></uni-section> -->
@@ -60,11 +56,11 @@
 <script setup lang="ts">
     import { ref, computed } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { varStatusMapping } from '@/common/mapping.ts'
+    import { deviceName, deviceArea } from "@/components/device/device.ts"
+    import device_title from "@/components/device/device_title.vue";
 
-    const deviceName = ref<string | null>(null);
-    const deviceArea = ref<string | null>(null);
     const var_full_code = ref<string | null>(null);
     const var_name = ref<string | null>(null);
     const var_type = ref<string | null>(null);
@@ -168,25 +164,6 @@
 </script>
 
 <style scoped>
-    /* 页面标题 */
-    .header {
-        text-align: center;
-        padding: 20px 0;
-        background-color: #f5f5f5;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .device-name {
-        font-size: 32px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .device-area {
-        font-size: 28px;
-        color: #777;
-    }
-
     /* 记录列表 */
     .layout {
         padding: 20px;
@@ -199,8 +176,8 @@
         background-color: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    
-    .data-slecte-title{
+
+    .data-slecte-title {
         font-size: 22px;
         font-weight: bold;
         color: #e67137;
@@ -217,7 +194,7 @@
         font-weight: bold;
         color: #333;
     }
-    
+
     .var-value {
         font-size: 24px;
         color: #1E90FF;

@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <page-head :title="deviceName + ' | ' + deviceArea"></page-head>
+        <device_title />
         <template v-for=" (item, index) in device_vars" :key="item.var_id">
             <template v-if="item.var_permission === 'R'">
                 <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
@@ -130,12 +130,12 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_post.ts"
+    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
     import { codeMapping, varBoolMapping, varStatusMapping } from '@/common/mapping.ts'
+    import { deviceName, deviceArea } from "@/components/device/device.ts"
+    import device_title from "@/components/device/device_title.vue";
 
     const device_id = ref<string | null>(null);
-    const deviceName = ref<string | null>(null);
-    const deviceArea = ref<string | null>(null);
     let device_vars = ref(null);
     let time_run = true;
 
