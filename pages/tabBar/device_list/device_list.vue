@@ -2,10 +2,8 @@
     <template v-if="isDataReady" class="app">
         <div class="app">
             <ProjectSelector />
-            <!-- <div class="container"> -->
             <AreaSelector />
             <DeviceCards />
-            <!-- </div> -->
         </div>
     </template>
     <template v-else>

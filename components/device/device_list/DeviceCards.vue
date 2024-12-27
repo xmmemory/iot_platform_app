@@ -11,7 +11,7 @@
             <div class="device-info">
                 <div class="device-title">{{ device.device_name }}{{ device.device_num }}</div>
                 <div class="device-details">
-                    {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} | 
+                    {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} |
                     {{ "在线" }}
                 </div>
             </div>
@@ -55,8 +55,11 @@
     };
 
     const getDeviceUrl = (device : any, basePath : string) => {
-        const areaName = all_areas.value.find((area : { id : number }) => area.id === device.area)?.area_name || "未指定分区";
-        const displayArea = areaName === "全部设备" ? "未指定分区" : areaName;
+        console.log(all_areas)
+        const areaName = all_areas.value.find((area : {
+            area_id : any; id : number
+        }) => area.area_id === device.area_id)?.area_name || "未指定分区";
+        const displayArea = areaName === "全部设备" ? "" : " | " + areaName;
         const status = device.status ? device.status : "";
 
         return `${basePath}?id=${device.device_id}&name=${device.device_name}${status}&area=${displayArea}`;

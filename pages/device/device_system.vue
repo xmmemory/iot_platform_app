@@ -1,7 +1,8 @@
 <template>
     <device_title />
+    <view style="padding: 20px;">
 
-    <!-- <view class="uni-title uni-common-pl">时间选择器</view>
+        <!-- <view class="uni-title uni-common-pl">时间选择器</view>
         <view class="uni-list">
             <view class="uni-list-cell">
                 <view class="uni-list-cell-left">
@@ -28,24 +29,25 @@
             注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中
         </view> -->
 
-    <template v-for="(item, index) in device_vars" :key="item.var_id">
-        <!-- Device Info Row -->
-        <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
-            <view class="var-name">
-                {{ item.var_name }}
+        <template v-for="(item, index) in device_vars" :key="item.var_id">
+            <!-- Device Info Row -->
+            <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
+                <view class="var-name">
+                    {{ item.var_name }}
+                </view>
+                <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
+                <button @click="goToDevicePage(item.var_name, item.var_type, item.var_full_code)" type="primary"
+                    size="mini" style="width: 320rpx; font-size: 17px;">历史记录查询</button>
             </view>
-            <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
-            <button @click="goToDevicePage(item.var_name, item.var_type, item.var_full_code)" type="primary" size="mini"
-                style="width: 320rpx; font-size: 17px;">历史记录查询</button>
-        </view>
-        <!-- Current Value Display -->
-        <uni-list-chat :avatar-circle="true" :title="formatTitle(item)" :avatar="default_icon_addr"
-            :time="item.last_datetime"
-            :note="item.var_permission === 'R/W' || item.var_permission === 'W' ? '可控制' : '只读'"
-            :clickable="item.var_permission === 'R/W' || item.var_permission === 'W' ? true : false"
-            @click="handleClick(item)">
-        </uni-list-chat>
-    </template>
+            <!-- Current Value Display -->
+            <uni-list-chat :avatar-circle="true" :title="formatTitle(item)" :avatar="default_icon_addr"
+                :time="item.last_datetime"
+                :note="item.var_permission === 'R/W' || item.var_permission === 'W' ? '可控制' : '只读'"
+                :clickable="item.var_permission === 'R/W' || item.var_permission === 'W' ? true : false"
+                @click="handleClick(item)">
+            </uni-list-chat>
+        </template>
+    </view>
 </template>
 
 <script setup lang="ts">

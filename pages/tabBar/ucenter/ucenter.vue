@@ -28,14 +28,6 @@
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
             <button v-if="auth_userName.includes('leon')" size="default" type="warn" class="navigator-button"
                 @click="clearTotalData">清空缓存数据</button>
-
-            <template v-if="progress > 0">
-                <p>下载进度: {{ progress }}%</p>
-                <view class="progress-bar">
-                    <view class="progress" :style="{ width: progress + '%' }"></view>
-                </view>
-            </template>
-
         </view>
     </template>
     <template v-else>
@@ -69,6 +61,12 @@
             <view class="links uni-center">
                 <navigator url="/pages/notice/forgot_password">忘记密码</navigator>
             </view>
+        </view>
+    </template>
+    <template v-if="progress > 0">
+        <p>下载进度: {{ progress }}%</p>
+        <view class="progress-bar">
+            <view class="progress" :style="{ width: progress + '%' }"></view>
         </view>
     </template>
 </template>

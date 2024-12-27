@@ -1,6 +1,7 @@
 <template>
-    <view class="container">
-        <device_title />
+    <!-- <view class="container"> -->
+    <device_title />
+    <view style="padding: 20px;">
         <template v-for=" (item, index) in device_vars" :key="item.var_id">
             <template v-if="item.var_permission === 'R'">
                 <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
