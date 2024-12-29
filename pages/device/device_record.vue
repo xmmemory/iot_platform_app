@@ -1,7 +1,7 @@
 <template>
     <view>
         <template v-if="Array.isArray(var_record)">
-            <device_title />
+            <device_title :deviceName="deviceName" :deviceArea="deviceArea" />
             <!-- 记录列表 -->
             <view class="layout">
                 <!-- <uni-section :title="'数据范围筛选'" type="line"></uni-section> -->

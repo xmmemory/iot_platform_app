@@ -1,5 +1,5 @@
 <template>
-    <device_title />
+    <device_title :deviceName="deviceName" :deviceArea="deviceArea" />
     <view style="padding: 20px;">
         <template v-for="(item, index) in device_vars" :key="item.var_id">
             <!-- Device Info Row -->

@@ -1,4 +1,4 @@
-<template name="device_title">
+<template>
     <view class="header">
         <text class="device-name">{{deviceName}}</text>
         <text class="device-area">{{deviceArea}}</text>
@@ -6,7 +6,10 @@
 </template>
 
 <script setup lang="ts">
-    import { deviceName, deviceArea } from "@/components/device/device.ts"
+    defineProps({
+        deviceName: String,
+        deviceArea: String
+    });
 </script>
 
 <style lang="scss" scoped>
