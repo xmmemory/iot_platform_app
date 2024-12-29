@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_get, request_post } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
 
     let all_areas = ref(null);
@@ -48,20 +48,18 @@
 
     onLoad((options) => {
         device_id.value = options.device_id || null;
-        // TODO
-        request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+        request_get("area", msg_cb_areas);
         if (device_id.value) {
-            // TODO
-            request_post("getDevice", { command: "filter_device_id", device_id: device_id.value }, handleMessage_devices);
+            request_get(`device/f?device_id=${device_id.value}`, msg_cb_device_info);
         }
     })
 
-    function handleMessage_devices(res : { data : any; }) {
+    function msg_cb_device_info(res : { data : any; }) {
         moment_device.value = res.data[0];
         // console.log('Received WebSocket moment_device:', moment_device);
     }
 
-    function handleMessage_areas(res : { data : any; }) {
+    function msg_cb_areas(res : { data : any; }) {
         all_areas.value = res.data.map((item : { area_id : number; area_name : string; }) => ({
             value: item.area_id,
             text: item.area_name

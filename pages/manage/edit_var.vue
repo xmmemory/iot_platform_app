@@ -32,7 +32,7 @@
 <script setup lang="ts">
     import { ref, reactive } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_get, request_post } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     const devicd_id = ref<number | null>(null);
@@ -62,8 +62,7 @@
             uni.setNavigationBarTitle({
                 title: " 变量编辑 --- " + options.name,
             });
-            //TODO
-            request_post("getVar", { command: "filter_var_id", var_id: var_id.value }, handleMessage_var);
+            request_get(`var/id/f?var_id=${var_id.value}`, msg_cb_var);
         }
         else {
             uni.setNavigationBarTitle({
@@ -72,7 +71,7 @@
         }
     })
 
-    function handleMessage_var(res : { data : any; }) {
+    function msg_cb_var(res : { data : any; }) {
         moment_var.value = res.data[0];
         // console.log('Received msg moment_var:', moment_var);
     }

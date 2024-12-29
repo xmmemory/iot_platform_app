@@ -37,7 +37,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
     import { onShow } from '@dcloudio/uni-app';
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_get } from "@/common/mutual/request_api.ts"
 
     // 定义响应式数据
     const loading = ref(false);
@@ -45,7 +45,7 @@
 
     // 获取页面参数并设置标题
     onShow(() => {
-        request_post("getDevice", { command: "all_devices" }, handleMessage_devices);
+        request_get("device", handleMessage_devices);
     });
 
     function handleMessage_devices(res : { data : any; }) {
@@ -105,7 +105,7 @@
             mask: true,
             duration: 1000
         });
-        request_post("getDevice", { command: "all_devices" }, handleMessage_devices);
+        request_get("device", handleMessage_devices);
     }
 </script>
 

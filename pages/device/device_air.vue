@@ -131,7 +131,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_post, request_get } from "@/common/mutual/request_api.ts"
     import { codeMapping, varBoolMapping, varStatusMapping } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
@@ -200,7 +200,7 @@
             device_id.value = options.id || null;
             deviceName.value = options.name || null;
             deviceArea.value = options.area || null;
-            request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            request_get(`var/device/f?device_id=${device_id.value}`, handleMessage_vars);
             restartMonitorChange(INTERVAL);
         }
         time_run = true;
@@ -231,7 +231,7 @@
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
             if (time_run) {
-                request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+                request_get(`var/device/f?device_id=${device_id.value}`, handleMessage_vars);
             }
         }, interval_ms);
     }

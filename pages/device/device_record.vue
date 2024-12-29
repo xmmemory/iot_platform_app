@@ -118,18 +118,12 @@
             var_type.value = options.type || null;
             deviceName.value = options.deviceName || null;
             deviceArea.value = options.deviceArea || null;
-            // TODO
-            request_get("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
-            // restartMonitorChange(INTERVAL);
+            request_get(`var/record/f?full_code=${var_full_code.value}`, handleMessage_recordValue);
         }
     });
 
     onUnload(() => {
         // console.log("onUnload")
-        if (monitorRecordChange) {
-            clearInterval(monitorRecordChange);
-            monitorRecordChange = null;
-        }
     });
 
     function handleMessage_recordValue(res : { data : any; }) {
@@ -140,28 +134,6 @@
             created_at: item.created_at.replace('T', ' '),
         }));
         // console.log('Received WebSocket message:', var_record);
-    }
-
-    let INTERVAL = 500; // 定时器间隔
-    let monitorRecordChange = ref();
-
-    function startMonitorChange(interval_ms : number) {
-        monitorRecordChange = setInterval(() => {
-            // TODO
-            request_post("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
-        }, interval_ms);
-    }
-
-    // 当需要重新启动定时器时，调用 start Monitor Change 函数
-    // 例如：在某个事件或条件满足时
-    function restartMonitorChange(interval_ms : number) {
-        if (monitorRecordChange) {
-            clearInterval(monitorRecordChange);
-            monitorRecordChange = null;
-        }
-        if (null == monitorRecordChange) {
-            startMonitorChange(interval_ms);
-        }
     }
 </script>
 

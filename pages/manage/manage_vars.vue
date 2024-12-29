@@ -33,7 +33,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
     import { onShow, onLoad } from '@dcloudio/uni-app';
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_post, request_get } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     // 定义响应式数据
@@ -51,10 +51,10 @@
 
     // 获取页面参数并设置标题
     onShow(() => {
-        request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+        request_get(`var/device/f?device_id=${device_id.value}`, msg_cb_vars);
     });
 
-    function handleMessage_vars(res : { data : any; }) {
+    function msg_cb_vars(res : { data : any; }) {
         device_vars.value = res.data;
         // console.log('Received WebSocket message:', res);        
     }
@@ -113,7 +113,7 @@
             mask: true,
             duration: 1000
         });
-        request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+        request_get(`var/device/f?device_id=${device_id.value}`, msg_cb_vars);
     }
 </script>
 

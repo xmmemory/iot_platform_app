@@ -25,8 +25,8 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post } from "@/common/mutual/request_api.ts"
-    import { varBoolMapping, varStatusMapping, default_icon_addr } from '@/common/mapping.ts'
+    import { request_post, request_get } from "@/common/mutual/request_api.ts"
+    import { varBoolMapping, default_icon_addr } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
 
@@ -140,8 +140,7 @@
             device_id.value = options.id || null;
             deviceName.value = options.name || null;
             deviceArea.value = options.area || null;
-            // TODO
-            request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            request_get(`var/device/f?device_id=${device_id.value}`, handleMessage_vars);
             restartMonitorChange(INTERVAL);
         }
         time_run = true;
@@ -190,7 +189,8 @@
             latest_value: systemStatusValue,
             last_datetime: device_vars.value.filter(
                 item => item.var_name === "系统运行中")[0]?.last_datetime,
-            var_full_code: "SYS_STATUS"
+            var_full_code: device_vars.value.filter(
+                item => item.var_name === "系统运行中")[0]?.var_full_code,
         });
         // console.log(device_vars.value)
 
@@ -208,7 +208,8 @@
         monitorRecordChange = setInterval(() => {
             if (time_run) {
                 // TODO
-                request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+                request_get(`var/device/f?device_id=${device_id.value}`, handleMessage_vars);
+                // request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             }
         }, interval_ms);
     }
