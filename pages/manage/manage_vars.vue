@@ -33,7 +33,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
     import { onShow, onLoad } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_post } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     // 定义响应式数据
@@ -51,7 +51,7 @@
 
     // 获取页面参数并设置标题
     onShow(() => {
-        request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+        request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
     });
 
     function handleMessage_vars(res : { data : any; }) {
@@ -85,7 +85,7 @@
             content: '是否删除',
             success: (res) => {
                 if (res.confirm) {
-                    request_post_simu_ws("modifyVar", {
+                    request_post("modifyVar", {
                         command: "del_var",
                         var_id: id,
                     }, handleMessage_delVar);
@@ -113,7 +113,7 @@
             mask: true,
             duration: 1000
         });
-        request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+        request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
     }
 </script>
 

@@ -1,19 +1,26 @@
 <template>
     <view class="container">
-        <uni-section title="新建区域" subTitle="区域名称至少2个字符" type="line" padding>
-            <uni-easyinput errorMessage v-model="area_name" focus placeholder="请输入内容">
+        <uni-section title="新建用户" subTitle="用户名称至少2个字符" type="line" padding>
+            <uni-easyinput errorMessage v-model="user_name" focus placeholder="请输入用户名">
+            </uni-easyinput>
+            <uni-easyinput type="password" style="margin-top: 20rpx;" errorMessage v-model="user_password" focus
+                placeholder="请输入密码">
+            </uni-easyinput>
+            <uni-easyinput type="password" style="margin-top: 20rpx;" errorMessage v-model="user_password_confirm" focus
+                placeholder="请输入密码,进行二次确认">
             </uni-easyinput>
         </uni-section>
-        <button size="default" type="primary" @click="add_area" :disabled="!(area_name.length >= 2)">
-            添加分区
+        <button size="default" type="primary" @click="add_user"
+            :disabled="!(user_name.length >= 2) ||  !(user_password.length >= 2) ">
+            添加新用户
         </button>
 
-        <uni-section title="当前区域列表" type="line"></uni-section>
+        <uni-section title="当前用户列表" type="line"></uni-section>
         <uni-swipe-action ref="swipeAction">
-            <uni-swipe-action-item v-for="(item, index) in all_areas" :right-options="item.options" :key="index"
+            <uni-swipe-action-item v-for="(item, index) in all_users" :right-options="item.options" :key="index"
                 @change="swipeChange(item.id)" @click="swipeClick($event, item.id)">
                 <view class="content-box">
-                    <text class="content-text">{{ item.content }}</text>
+                    <text class="content-text">{{ item.name }}</text>
                 </view>
             </uni-swipe-action-item>
         </uni-swipe-action>
@@ -29,33 +36,46 @@
 
 <script setup lang="ts">
     import { ref, reactive, nextTick } from 'vue';
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_del, request_get, request_post, request_put } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
     //
-    const msgType = ref('success');
-    const messageText = ref('这是一条成功提示');
-    // 使用 ref 获取组件实例
-    const messageRef = ref(null);
-    //
-    let area_name = ref("");
-    //
-    interface Area {
+    let user_name = ref("");
+    let user_password = ref("");
+    let user_password_confirm = ref("");
+
+    interface User {
         id : number;
-        content : string;
+        name : string;
         options : { text : string; style ?: { backgroundColor : string } }[]; // 可选style字段
     }
-    const all_areas = reactive<Area[]>([{
+    let all_users = reactive<User[]>([{
         id: 0,
-        content: '初始化区域',  // 默认内容
+        name: '请输入名称',
         options: [
-            { text: '编辑' },
+            // { text: '编辑' },
             { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
         ]
     }]);
-
+    //
+    const msgType = ref('success');
+    const messageText = ref('');
+    // 使用 ref 获取组件实例
+    const messageRef = ref(null);
+    //
     onLoad(() => {
-        request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+        request_get("user", msg_cb_users);
     })
+
+    function msg_cb_users(res : { data : any[]; }) {
+        all_users.splice(0, all_users.length, ...res.data.map((item) => ({
+            id: item.id,
+            name: item.name + " | " + item.permission,
+            options: [
+                { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
+            ]
+        })));
+        // console.log('all_users data:', all_users);
+    }
 
     const dialogToggle = (type : string, content : string) => {
         msgType.value = type;
@@ -76,39 +96,39 @@
         });
     };
 
-    function handleMessage_areas(res : { data : any[][]; }) {
-        all_areas.splice(0, all_areas.length, ...res.data.map((item) => ({
-            id: item.area_id,
-            content: item.area_name,
-            options: [
-                { text: '编辑' },
-                { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
-            ]
-        })))
-        console.log('all_areas data:', all_areas);
-    }
-
-    function handleMessage_insertArea(res : { statusCode : number; data : any; }) {
+    function msg_cb_create_user(res : { statusCode : number; data : any; }) {
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
-            messageToggle("分区添加成功");
-            area_name.value = ''
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            messageToggle("用户添加成功");
+            user_name.value = ''
+            user_password.value = ''
+            request_get("user", msg_cb_users);
         }
         else {
             dialogToggle('error', res.data);
         }
     }
 
-    function add_area() {
-        request_post("modifyArea", { command: "insert_area", area_name: area_name.value }, handleMessage_insertArea);
+    function add_user() {
+        if (user_password.value != user_password_confirm.value) {
+            uni.showToast({
+                title: "两次密码不一致",
+                icon: "error",
+                mask: true,
+                duration: 800
+            });
+            return;
+        }
+        request_post("user",
+            { user_name: user_name.value, user_password: user_password.value },
+            msg_cb_create_user);
     }
 
     function swipeChange(index : number) {
         console.log('当前索引：', index);
     }
 
-    function swipeClick(e : any, area_id : number) {
+    function swipeClick(e : any, user_id : number) {
         const { content } = e;
         if (content.text === '删除') {
             uni.showModal({
@@ -116,7 +136,7 @@
                 content: '是否删除',
                 success: (res) => {
                     if (res.confirm) {
-                        request_post("modifyArea", { command: "del_area", area_id: area_id }, handleMessage_delArea);
+                        request_del("user", { user_id: user_id }, msg_cb_del);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -124,12 +144,12 @@
             });
         } else if (content.text === '编辑') {
             uni.showModal({
-                title: '分区名称修改',
+                title: '用户名称修改',
                 editable: true,
-                placeholderText: '请输入新的区域名称',
+                placeholderText: '请输入新的用户名称',
                 success: function (res) {
                     if (res.confirm) {
-                        request_post("modifyArea", { command: "update_area", area_id: area_id, area_name: res.content }, handleMessage_updateArea);
+                        request_put("user", { user_name: res.content }, msg_cb_modify);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -142,23 +162,23 @@
             });
         }
     }
-    
-    function handleMessage_updateArea(res : { statusCode : number; data : any; }) {
+
+    function msg_cb_modify(res : { statusCode : number; data : any; }) {
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
-            messageToggle("分区修改成功");
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            messageToggle("用户修改成功");
+            request_get("user", msg_cb_users);
         }
         else {
             dialogToggle('error', res.data);
         }
     }
 
-    function handleMessage_delArea(res : { statusCode : number; data : any; }) {
+    function msg_cb_del(res : { statusCode : number; data : any; }) {
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
-            messageToggle("分区删除成功");
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            messageToggle("用户删除成功");
+            request_get("user", msg_cb_users);
         }
         else {
             dialogToggle('error', res.data);

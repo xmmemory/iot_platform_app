@@ -32,7 +32,7 @@
 <script setup lang="ts">
     import { ref, reactive } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_post } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     const devicd_id = ref<number | null>(null);
@@ -62,7 +62,8 @@
             uni.setNavigationBarTitle({
                 title: " 变量编辑 --- " + options.name,
             });
-            request_post_simu_ws("getVar", { command: "filter_var_id", var_id: var_id.value }, handleMessage_var);
+            //TODO
+            request_post("getVar", { command: "filter_var_id", var_id: var_id.value }, handleMessage_var);
         }
         else {
             uni.setNavigationBarTitle({
@@ -112,7 +113,8 @@
 
     const update_var = (item : VarStr) => {
         if (var_id.value) {
-            request_post_simu_ws("modifyVar", {
+            //TODO
+            request_post("modifyVar", {
                 command: "update_var",
                 var_id: var_id.value,
                 var_name: item.var_name,
@@ -124,7 +126,7 @@
             }, handleMessage_modifyRes);
         }
         else {
-            request_post_simu_ws("modifyVar", {
+            request_post("modifyVar", {
                 command: "insert_var",
                 var_name: item.var_name,
                 var_code: item.var_code,

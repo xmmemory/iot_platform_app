@@ -55,7 +55,7 @@
     };
 
     const getDeviceUrl = (device : any, basePath : string) => {
-        console.log(all_areas)
+        // console.log(all_areas)
         const areaName = all_areas.value.find((area : {
             area_id : any; id : number
         }) => area.area_id === device.area_id)?.area_name || "未指定分区";

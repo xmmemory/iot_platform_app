@@ -56,7 +56,7 @@
 <script setup lang="ts">
     import { ref, computed } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_get } from "@/common/mutual/request_api.ts"
     import { varStatusMapping } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
@@ -118,7 +118,8 @@
             var_type.value = options.type || null;
             deviceName.value = options.deviceName || null;
             deviceArea.value = options.deviceArea || null;
-            request_post_simu_ws("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
+            // TODO
+            request_get("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
             // restartMonitorChange(INTERVAL);
         }
     });
@@ -146,7 +147,8 @@
 
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
-            request_post_simu_ws("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
+            // TODO
+            request_post("getVarValue", { command: "1", var_full_code: var_full_code.value }, handleMessage_recordValue);
         }, interval_ms);
     }
 

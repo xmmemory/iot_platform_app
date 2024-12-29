@@ -94,7 +94,12 @@
         },
         {
             "root": "pages/manage",
-            "pages": [{
+            "pages": [ {
+                "path": "manage_user",
+                "style": {
+                    "navigationBarTitleText": "用户管理"
+                }
+            },{
                 "path": "manage_areas",
                 "style": {
                     "navigationBarTitleText": "区域管理"

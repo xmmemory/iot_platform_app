@@ -131,7 +131,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_post } from "@/common/mutual/request_api.ts"
     import { codeMapping, varBoolMapping, varStatusMapping } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
@@ -154,7 +154,7 @@
             content: "确认" + varBoolMapping[new_var_value] + "设备？",
             success: (res) => {
                 if (res.confirm) {
-                    request_post_simu_ws("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
+                    request_post("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',
@@ -180,7 +180,7 @@
             success: function (res) {
                 if (res.confirm) {
                     console.log(res.content);
-                    request_post_simu_ws("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
+                    request_post("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',
@@ -200,7 +200,7 @@
             device_id.value = options.id || null;
             deviceName.value = options.name || null;
             deviceArea.value = options.area || null;
-            request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             restartMonitorChange(INTERVAL);
         }
         time_run = true;
@@ -231,7 +231,7 @@
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
             if (time_run) {
-                request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+                request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             }
         }, interval_ms);
     }

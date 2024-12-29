@@ -31,7 +31,7 @@
                 mask: true,
                 duration: 2000
             })
-            request_get("get_project/all_projects", msg_cb_projects);
+            request_get("project", msg_cb_projects);
         }
     })
 

@@ -19,11 +19,16 @@
                         class="navigator-button">
                         <button class="login-button" type="default">区域管理</button>
                     </navigator>
+                    <navigator v-if="auth_userName.includes('leon')" url="/pages/manage/manage_user"
+                        open-type="navigate" hover-class="other-navigator-hover" class="navigator-button">
+                        <button class="login-button" type="primary">用户管理</button>
+                    </navigator>
                 </view>
             </view>
 
 
-            <button size="default" type="primary" class="navigator-button" @click="call_us">联系我们</button>
+            <button v-if="!auth_userName.includes('leon')" size="default" type="primary" class="navigator-button"
+                @click="call_us">联系我们</button>
             <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
             <button v-if="auth_userName.includes('leon')" size="default" type="warn" class="navigator-button"
@@ -74,7 +79,7 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_get } from "@/common/mutual/request_api.ts"
     import { login_status, func_login } from "@/common/mutual/auth.ts"
 
     const system_info = uni.getSystemInfoSync();
@@ -137,7 +142,7 @@
         // });
     }
 
-    function handleMessage_projects_checkUpdate(res : { data : { latest_version : any[][]; }; }) {
+    function msg_cb_version(res : { data : { latest_version : any[][]; }; }) {
         const current_version = plus.runtime.version;
         const latest_version = res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
@@ -195,7 +200,8 @@
             });
         }
         updating = true;
-        request_post_simu_ws("getVersion", { username: auth_userName.value }, handleMessage_projects_checkUpdate);
+        //TODO
+        request_get(`version?username=${auth_userName.value}`, msg_cb_version);
     }
 
     function downloadAndInstallUpdate(downloadUrl : string) {

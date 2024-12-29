@@ -1,38 +1,10 @@
 <template>
     <device_title />
     <view style="padding: 20px;">
-
-        <!-- <view class="uni-title uni-common-pl">时间选择器</view>
-        <view class="uni-list">
-            <view class="uni-list-cell">
-                <view class="uni-list-cell-left">
-                    开始时间
-                </view>
-                <view class="uni-list-cell-db">
-                    <picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
-                        <view class="uni-input">{{time}}</view>
-                    </picker>
-                </view>
-            </view>
-            <view class="uni-list-cell">
-                <view class="uni-list-cell-left">
-                    结束时间
-                </view>
-                <view class="uni-list-cell-db">
-                    <picker mode="time" :value="time" start="09:01" end="21:01" @change="bindTimeChange">
-                        <view class="uni-input">{{time}}</view>
-                    </picker>
-                </view>
-            </view>
-        </view>
-        <view class="uni-picker-tips">
-            注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中
-        </view> -->
-
         <template v-for="(item, index) in device_vars" :key="item.var_id">
             <!-- Device Info Row -->
             <view class="uni-flex uni-row" style="margin-top: 15rpx; margin-bottom: 15rpx;">
-                <view class="var-name">
+                <view class="device-var-name">
                     {{ item.var_name }}
                 </view>
                 <view class="text" style="-webkit-flex: 1;flex: 1;"> </view>
@@ -53,7 +25,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_post } from "@/common/mutual/request_api.ts"
     import { varBoolMapping, varStatusMapping, default_icon_addr } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
@@ -81,8 +53,8 @@
         // 确保 item.latest_value 存在并且是布尔值 'True' 或 'False'
         if (item.var_type === 'BOOL' && (item.latest_value === 'True' || item.latest_value === 'False')) {
             return '当前状态：' + varBoolMapping[item.latest_value] || '未知状态';
-        } else if (item.var_name === '运行状态') {
-            return '当前状态：' + varStatusMapping[item.latest_value];
+        } else if (item.var_name === '系统运行状态') {
+            return item.latest_value;
         }
         // special var.
         if (item.var_name.includes('频率')) {
@@ -122,7 +94,7 @@
             content: "确认" + varBoolMapping[new_var_value] + "设备？",
             success: (res) => {
                 if (res.confirm) {
-                    request_post_simu_ws("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
+                    request_post("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',
@@ -148,7 +120,7 @@
             success: function (res) {
                 if (res.confirm) {
                     console.log(res.content);
-                    request_post_simu_ws("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
+                    request_post("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',
@@ -168,7 +140,8 @@
             device_id.value = options.id || null;
             deviceName.value = options.name || null;
             deviceArea.value = options.area || null;
-            request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+            // TODO
+            request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             restartMonitorChange(INTERVAL);
         }
         time_run = true;
@@ -190,16 +163,52 @@
             ...item,
             last_datetime: item.last_datetime.replace('T', ' '),
         }));
+        // 查找“启动中”，“停止中”和“系统运行中”
+        const startUp = device_vars.value.find((item) => item.var_name === "启动中");
+        const stopUp = device_vars.value.find((item) => item.var_name === "停止中");
+        const systemRunning = device_vars.value.find((item) => item.var_name === "系统运行中");
+
+        let systemStatusValue = "系统停止";  // 默认值
+
+        if (startUp && startUp.latest_value === "True") {
+            systemStatusValue = "启动中";
+        } else if (stopUp && stopUp.latest_value === "True") {
+            systemStatusValue = "停止中";
+        } else if (systemRunning && systemRunning.latest_value === "True") {
+            systemStatusValue = "系统运行中";
+        }
+
+
+
+        // 添加“系统运行状态”
+        device_vars.value.unshift({
+            var_id: 0,
+            var_name: "系统运行状态",
+            var_code: "9999",  // 根据实际需求设置
+            var_type: "REAL",
+            var_permission: "R",
+            latest_value: systemStatusValue,
+            last_datetime: device_vars.value.filter(
+                item => item.var_name === "系统运行中")[0]?.last_datetime,
+            var_full_code: "SYS_STATUS"
+        });
+        // console.log(device_vars.value)
+
+        // 先删除“启动中”，“停止中”，“系统运行中”
+        device_vars.value = device_vars.value.filter(item => !["启动中", "停止中", "系统运行中"].includes(item.var_name));
+
+
         // console.log('Received WebSocket message:', res);
     }
 
-    let INTERVAL = 500; // 定时器间隔
+    const INTERVAL = 1000; // 定时器间隔
     let monitorRecordChange = ref();
 
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
             if (time_run) {
-                request_post_simu_ws("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
+                // TODO
+                request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             }
         }, interval_ms);
     }
@@ -226,11 +235,7 @@
 </script>
 
 <style scoped>
-    .container {
-        padding: 20px;
-    }
-
-    .var-name {
+    .device-var-name {
         text-align: left;
         font-size: 22px;
         font-weight: bold;

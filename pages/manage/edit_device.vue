@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
-    import { request_post_simu_ws } from "@/common/mutual/request_api.ts"
+    import { request_post } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
 
     let all_areas = ref(null);
@@ -48,9 +48,11 @@
 
     onLoad((options) => {
         device_id.value = options.device_id || null;
-        request_post_simu_ws("getArea", { command: "all_areas" }, handleMessage_areas);
+        // TODO
+        request_post("getArea", { command: "all_areas" }, handleMessage_areas);
         if (device_id.value) {
-            request_post_simu_ws("getDevice", { command: "filter_device_id", device_id: device_id.value }, handleMessage_devices);
+            // TODO
+            request_post("getDevice", { command: "filter_device_id", device_id: device_id.value }, handleMessage_devices);
         }
     })
 
@@ -71,7 +73,8 @@
     const submit = (ref : any) => {
         console.log(ref)
         if (device_id.value) {
-            request_post_simu_ws("modifyDevice", {
+            // TODO-PATCH
+            request_post("modifyDevice", {
                 command: "update_device",
                 device_name: ref.device_name,
                 device_num: ref.device_num,
@@ -81,7 +84,8 @@
             }, handleMessage_modifyRes);
         }
         else {
-            request_post_simu_ws("modifyDevice", {
+            // TODO
+            request_post("modifyDevice", {
                 command: "insert_device",
                 device_name: ref.device_name,
                 device_num: ref.device_num,
