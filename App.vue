@@ -5,7 +5,7 @@
 	import {
 		version
 	} from './package.json'
-	import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update';
+	// import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update';
 
 	export default {
 		onLaunch: function() {
@@ -21,9 +21,9 @@
 			console.log('App Launch');
 			// #ifdef APP-PLUS
 			// App平台检测升级，服务端代码是通过uniCloud的云函数实现的，详情可参考：https://ext.dcloud.net.cn/plugin?id=4542
-			if (plus.runtime.appid !== 'HBuilder') { // 真机运行不需要检查更新，真机运行时appid固定为'HBuilder'，这是调试基座的appid
-				checkUpdate()
-			}
+			// if (plus.runtime.appid !== 'HBuilder') { // 真机运行不需要检查更新，真机运行时appid固定为'HBuilder'，这是调试基座的appid
+			// 	checkUpdate()
+			// }
 
 			// 一键登录预登陆，可以显著提高登录速度
 			uni.preLogin({

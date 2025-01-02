@@ -7,7 +7,8 @@
                 <!-- <uni-section :title="'数据范围筛选'" type="line"></uni-section> -->
                 <text class="data-slecte-title">数据范围筛选:</text>
                 <view class="example-body">
-                    <uni-datetime-picker v-model="datetimeRange" type="datetimerange" rangeSeparator="至" />
+                    <uni-datetime-picker @change="dateChange" v-model="datetimeRange" type="datetimerange"
+                        rangeSeparator="至" />
                     <view style="margin-bottom: 30rpx;"></view>
                 </view>
                 <view class="row" v-for="(item) in filteredRecords" :key="item.created_at">
@@ -54,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, computed } from "vue";
+    import { ref, computed, nextTick } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
     import { request_get } from "@/common/mutual/request_api.ts"
     import { varStatusMapping } from '@/common/mapping.ts'
@@ -109,6 +110,8 @@
         return num
     }
 
+    const data_length = 15.;
+
     // 获取页面参数并设置标题
     onLoad((options) => {
         // console.log(options)
@@ -118,13 +121,23 @@
             var_type.value = options.type || null;
             deviceName.value = options.deviceName || null;
             deviceArea.value = options.deviceArea || null;
-            request_get(`var/record/f?full_code=${var_full_code.value}`, handleMessage_recordValue);
+            request_get(
+                `var/record/f?full_code=${var_full_code.value}&start_date=${convertToISOFormat(datetimeRange.value[0])}&end_date=${convertToISOFormat(datetimeRange.value[1])}&data_length=${data_length}`,
+                handleMessage_recordValue
+            );
         }
     });
+
 
     onUnload(() => {
         // console.log("onUnload")
     });
+
+    function convertToISOFormat(dateString : string) : string {
+        // 注意：需要将空格替换为 'T'，以使其符合 ISO 8601 格式
+        const formattedDateString = dateString.replace(" ", "T");
+        return formattedDateString
+    }
 
     function handleMessage_recordValue(res : { data : any; }) {
         var_record.value = res.data;
@@ -134,6 +147,20 @@
             created_at: item.created_at.replace('T', ' '),
         }));
         // console.log('Received WebSocket message:', var_record);
+    }
+
+    function dateChange() {
+        nextTick(() => {
+            console.log(datetimeRange.value)
+            console.log(datetimeRange.value[0], datetimeRange.value[1])
+            const start_date = convertToISOFormat(datetimeRange.value[0])
+            const end_date = convertToISOFormat(datetimeRange.value[1])
+            console.log(start_date, end_date)
+            request_get(
+                `var/record/f?full_code=${var_full_code.value}&start_date=${start_date}&end_date=${end_date}&data_length=${data_length}`,
+                handleMessage_recordValue
+            );
+        });
     }
 </script>
 

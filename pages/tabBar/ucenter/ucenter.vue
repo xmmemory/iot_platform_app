@@ -93,9 +93,10 @@
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
             login();
+            uni.createPushMessage({  title: '自动登录完成',  content: '自动登录完成01',  data: {    url: 'your_url'  }})
         }
     })
-
+    
     // 登录逻辑
     function login() {
         if (!auth_userName.value || !auth_password.value) {
@@ -105,22 +106,7 @@
             });
             return;
         }
-        // 获取当前时间
-        let currentDate = new Date();
-        // 指定日期，格式为 "YYYY-MM-DD"
-        let targetDate = new Date("2025-1-1");
-        // 判断当前时间是否超过目标日期
-        if (currentDate > targetDate) {
-            uni.showToast({
-                title: "请更新最新版本!",
-                icon: "error",
-                mask: true,
-                duration: 3000
-            });
-        }
-        else {
-            func_login(auth_userName, auth_password);
-        }
+        func_login(auth_userName, auth_password);
     };
 
     function call_us() {
@@ -130,16 +116,6 @@
                 console.log("成功拨打电话")
             }
         })
-    }
-
-    function handleMessage_res(res : { data : any; }) {
-        console.log('Received WebSocket message:', res.data);
-        // uni.showToast({
-        //     title: res.data,
-        //     icon: "none",
-        //     mask: true,
-        //     duration: 1000
-        // });
     }
 
     function msg_cb_version(res : { data : { latest_version : any[][]; }; }) {
@@ -200,7 +176,6 @@
             });
         }
         updating = true;
-        //TODO
         request_get(`version?username=${auth_userName.value}`, msg_cb_version);
     }
 

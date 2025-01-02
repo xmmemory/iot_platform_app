@@ -2,8 +2,8 @@
     "name" : "绿如蓝",
     "appid" : "__UNI__2F0B4A2",
     "description" : "物联网数据监控平台",
-    "versionName" : "1.2.4",
-    "versionCode" : 101,
+    "versionName" : "1.2.6",
+    "versionCode" : 126,
     "transformPx" : false,
     "app-plus" : {
         "usingComponents" : true,
@@ -18,12 +18,10 @@
             "delay" : 0
         },
         "modules" : {
-            "OAuth" : {},
-            "Payment" : {},
-            "Push" : {},
-            "Share" : {},
-            "Speech" : {},
-            "VideoPlayer" : {}
+            "SQLite" : {},
+            "VideoPlayer" : {},
+            "Contacts" : {},
+            "Push" : {}
         },
         "distribute" : {
             "android" : {
@@ -73,7 +71,22 @@
                 "speech" : {
                     "ifly" : {}
                 },
-                "ad" : {}
+                "ad" : {},
+                "push" : {
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : false,
+                        "icons" : {
+                            "small" : {
+                                "hdpi" : "unpackage/res/icons/40x40.png",
+                                "xxhdpi" : "unpackage/res/icons/72x72.png",
+                                "xhdpi" : "unpackage/res/icons/58x58.png",
+                                "mdpi" : "unpackage/res/icons/29x29.png",
+                                "ldpi" : "unpackage/res/icons/20x20.png"
+                            }
+                        }
+                    }
+                }
             },
             "orientation" : [ "portrait-primary" ],
             "icons" : {
@@ -131,7 +144,7 @@
         "versionCode" : 100
     },
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx23aa40779feecebd",
         "setting" : {
             "urlCheck" : false
         },

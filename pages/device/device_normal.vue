@@ -161,7 +161,7 @@
         // console.log('Received WebSocket message:', res);
     }
 
-    let INTERVAL = 500; // 定时器间隔
+    let INTERVAL = 800; // 定时器间隔
     let monitorRecordChange = ref();
 
     function startMonitorChange(interval_ms : number) {

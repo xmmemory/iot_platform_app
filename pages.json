@@ -1,16 +1,4 @@
 {
-    "leftWindow": {
-        "path": "windows/left-window.vue",
-        "style": {
-            "width": "350px"
-        }
-    },
-    "topWindow": {
-        "path": "windows/top-window.vue",
-        "style": {
-            "height": "60px"
-        }
-    },
     "pages": [
         // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
         {
@@ -70,7 +58,7 @@
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
-            },{
+            }, {
                 "path": "device_system",
                 "style": {
                     "navigationBarTitleText": "设备详情"
@@ -80,12 +68,12 @@
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
-            },{
+            }, {
                 "path": "device_picker",
                 "style": {
                     "navigationBarTitleText": "设备详情"
                 }
-            },{
+            }, {
                 "path": "device_record",
                 "style": {
                     "navigationBarTitleText": "设备记录"
@@ -94,12 +82,12 @@
         },
         {
             "root": "pages/manage",
-            "pages": [ {
+            "pages": [{
                 "path": "manage_user",
                 "style": {
                     "navigationBarTitleText": "用户管理"
                 }
-            },{
+            }, {
                 "path": "manage_areas",
                 "style": {
                     "navigationBarTitleText": "区域管理"
@@ -162,7 +150,6 @@
             "navigationBarTextStyle": "black",
             "navigationBarBackgroundColor": "#F1F1F1"
         }
-
     },
     "tabBar": {
         "color": "#7A7E83",
@@ -170,43 +157,20 @@
         "borderStyle": "black",
         "backgroundColor": "#F8F8F8",
         "list": [{
-                "pagePath": "pages/tabBar/device_list/device_list",
-                "iconPath": "static/tabbar/list.png",
-                "selectedIconPath": "static/tabbar/list_active.png",
-                "text": "设备列表"
-            }, {
-                "pagePath": "pages/tabBar/discover/discover",
-                "iconPath": "static/tabbar/grid.png",
-                "selectedIconPath": "static/tabbar/grid_active.png",
-                "text": "发现"
-            }, {
-                "pagePath": "pages/tabBar/ucenter/ucenter",
-                "iconPath": "static/tabbar/me.png",
-                "selectedIconPath": "static/tabbar/me_active.png",
-                "text": "用户中心"
-            }
-            // , {
-            //     "pagePath": "pages/tabBar/extUI/extUI",
-            //     "iconPath": "static/extui.png",
-            //     "selectedIconPath": "static/extuiHL.png",
-            //     "text": "扩展组件"
-            // }, {
-            //     "pagePath": "pages/tabBar/component/component",
-            //     "iconPath": "static/component.png",
-            //     "selectedIconPath": "static/componentHL.png",
-            //     "text": "内置组件"
-            // },
-            // {
-            //     "pagePath": "pages/tabBar/API/API",
-            //     "iconPath": "static/api.png",
-            //     "selectedIconPath": "static/apiHL.png",
-            //     "text": "接口"
-            // }, {
-            //     "pagePath": "pages/tabBar/template/template",
-            //     "iconPath": "static/template.png",
-            //     "selectedIconPath": "static/templateHL.png",
-            //     "text": "模板"
-            // }
-        ]
+            "pagePath": "pages/tabBar/device_list/device_list",
+            "iconPath": "static/tabbar/list.png",
+            "selectedIconPath": "static/tabbar/list_active.png",
+            "text": "设备列表"
+        }, {
+            "pagePath": "pages/tabBar/discover/discover",
+            "iconPath": "static/tabbar/grid.png",
+            "selectedIconPath": "static/tabbar/grid_active.png",
+            "text": "发现"
+        }, {
+            "pagePath": "pages/tabBar/ucenter/ucenter",
+            "iconPath": "static/tabbar/me.png",
+            "selectedIconPath": "static/tabbar/me_active.png",
+            "text": "用户中心"
+        }]
     }
 }

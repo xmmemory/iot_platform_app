@@ -207,7 +207,6 @@
     function startMonitorChange(interval_ms : number) {
         monitorRecordChange = setInterval(() => {
             if (time_run) {
-                // TODO
                 request_get(`var/device/f?device_id=${device_id.value}`, handleMessage_vars);
                 // request_post("getVar", { command: "filter_device_id", device_id: device_id.value }, handleMessage_vars);
             }

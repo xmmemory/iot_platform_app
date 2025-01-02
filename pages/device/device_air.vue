@@ -225,7 +225,7 @@
         // console.log('Received WebSocket message:', res);
     }
 
-    let INTERVAL = 500; // 定时器间隔
+    let INTERVAL = 800; // 定时器间隔
     let monitorRecordChange = ref();
 
     function startMonitorChange(interval_ms : number) {
@@ -260,61 +260,5 @@
 <style scoped>
     .container {
         padding: 20px;
-    }
-
-    .device-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 16px;
-    }
-
-    .device-details {
-        font-size: 16px;
-        color: #666;
-    }
-
-    .device-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 16px;
-        margin-top: 16px;
-
-        .no-devices {
-            grid-column: 1 / -1;
-            /* 占据所有列 */
-            text-align: center;
-            font-size: 18px;
-            color: #888;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-        }
-
-        .device-card {
-            background-color: #fff;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-
-            .device-icon {
-                width: 60px;
-                height: 60px;
-                object-fit: cover;
-                margin-bottom: 10px;
-            }
-
-            .device-info {
-                .device-title {
-                    font-size: 16px;
-                    font-weight: bold;
-                }
-
-                .device-details {
-                    font-size: 16px;
-                    color: #666;
-                }
-            }
-        }
     }
 </style>
