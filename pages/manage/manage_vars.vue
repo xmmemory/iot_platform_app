@@ -20,7 +20,7 @@
                     <uni-td>
                         <view class="uni-group">
                             <button type="primary" size="mini"
-                                @click="var_edit(item.var_id, item.var_name+item.var_code)">编辑</button>
+                                @click="var_edit(item.var_id, item.var_name+item.var_code)">变量编辑</button>
                             <button type="warn" size="mini" @click="var_del(item.var_id, item.var_name)">删除</button>
                         </view>
                     </uni-td>

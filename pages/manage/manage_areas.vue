@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
     import { ref, reactive, nextTick } from 'vue';
-    import { request_post } from "@/common/mutual/request_api.ts"
+    import { request_post, request_get } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
     //
     const msgType = ref('success');
@@ -54,7 +54,7 @@
     }]);
 
     onLoad(() => {
-        request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+        refresh_area_info();
     })
 
     const dialogToggle = (type : string, content : string) => {
@@ -76,7 +76,7 @@
         });
     };
 
-    function handleMessage_areas(res : { data : any[][]; }) {
+    function msg_cb_areas(res : { data : any[][]; }) {
         all_areas.splice(0, all_areas.length, ...res.data.map((item) => ({
             id: item.area_id,
             content: item.area_name,
@@ -93,7 +93,7 @@
         if (200 == res.statusCode) {
             messageToggle("分区添加成功");
             area_name.value = ''
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            refresh_area_info();
         }
         else {
             dialogToggle('error', res.data);
@@ -147,7 +147,7 @@
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("分区修改成功");
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            refresh_area_info();
         }
         else {
             dialogToggle('error', res.data);
@@ -158,12 +158,17 @@
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("分区删除成功");
-            request_post("getArea", { command: "all_areas" }, handleMessage_areas);
+            refresh_area_info();
         }
         else {
             dialogToggle('error', res.data);
         }
     }
+
+    function refresh_area_info(){
+        request_get("area", msg_cb_areas);
+    }
+
 </script>
 
 

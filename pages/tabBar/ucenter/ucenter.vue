@@ -93,7 +93,7 @@
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
             login();
-            uni.createPushMessage({  title: '自动登录完成',  content: '自动登录完成01',  data: {    url: 'your_url'  }})
+            uni.createPushMessage({  title: '自动登录完成',  content: '自动登录完成',  data: {    url: 'your_url'  }})
         }
     })
     
