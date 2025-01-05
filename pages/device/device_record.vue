@@ -122,7 +122,7 @@
             deviceName.value = options.deviceName || null;
             deviceArea.value = options.deviceArea || null;
             request_get(
-                `var/record/f?full_code=${var_full_code.value}&start_date=${convertToISOFormat(datetimeRange.value[0])}&end_date=${convertToISOFormat(datetimeRange.value[1])}&data_length=${data_length}`,
+                `record/var/f?full_code=${var_full_code.value}&start_date=${convertToISOFormat(datetimeRange.value[0])}&end_date=${convertToISOFormat(datetimeRange.value[1])}&data_length=${data_length}`,
                 handleMessage_recordValue
             );
         }
@@ -157,7 +157,7 @@
             const end_date = convertToISOFormat(datetimeRange.value[1])
             console.log(start_date, end_date)
             request_get(
-                `var/record/f?full_code=${var_full_code.value}&start_date=${start_date}&end_date=${end_date}&data_length=${data_length}`,
+                `record/var/f?full_code=${var_full_code.value}&start_date=${start_date}&end_date=${end_date}&data_length=${data_length}`,
                 handleMessage_recordValue
             );
         });

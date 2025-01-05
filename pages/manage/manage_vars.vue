@@ -51,7 +51,7 @@
 
     // 获取页面参数并设置标题
     onShow(() => {
-        request_get(`var/device/f?device_id=${device_id.value}`, msg_cb_vars);
+        request_get(`vars/device/f?device_id=${device_id.value}`, msg_cb_vars);
     });
 
     function msg_cb_vars(res : { data : any; }) {
@@ -113,7 +113,7 @@
             mask: true,
             duration: 1000
         });
-        request_get(`var/device/f?device_id=${device_id.value}`, msg_cb_vars);
+        request_get(`vars/device/f?device_id=${device_id.value}`, msg_cb_vars);
     }
 </script>
 

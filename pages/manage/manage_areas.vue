@@ -166,7 +166,7 @@
     }
 
     function refresh_area_info(){
-        request_get("area", msg_cb_areas);
+        request_get("areas", msg_cb_areas);
     }
 
 </script>

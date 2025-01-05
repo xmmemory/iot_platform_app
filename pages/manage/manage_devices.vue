@@ -45,7 +45,7 @@
 
     // 获取页面参数并设置标题
     onShow(() => {
-        request_get("device", handleMessage_devices);
+        request_get("devices", handleMessage_devices);
     });
 
     function handleMessage_devices(res : { data : any; }) {
@@ -105,7 +105,7 @@
             mask: true,
             duration: 1000
         });
-        request_get("device", handleMessage_devices);
+        request_get("devices", handleMessage_devices);
     }
 </script>
 

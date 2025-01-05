@@ -48,7 +48,7 @@
 
     onLoad((options) => {
         device_id.value = options.device_id || null;
-        request_get("area", msg_cb_areas);
+        request_get("areas", msg_cb_areas);
         if (device_id.value) {
             request_get(`device/f?device_id=${device_id.value}`, msg_cb_device_info);
         }

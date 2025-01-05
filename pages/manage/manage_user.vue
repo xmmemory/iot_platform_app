@@ -63,7 +63,7 @@
     const messageRef = ref(null);
     //
     onLoad(() => {
-        request_get("user", msg_cb_users);
+        get_users();
     })
 
     function msg_cb_users(res : { data : any[]; }) {
@@ -102,7 +102,7 @@
             messageToggle("用户添加成功");
             user_name.value = ''
             user_password.value = ''
-            request_get("user", msg_cb_users);
+            get_users();
         }
         else {
             dialogToggle('error', res.data);
@@ -167,7 +167,7 @@
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("用户修改成功");
-            request_get("user", msg_cb_users);
+            get_users();
         }
         else {
             dialogToggle('error', res.data);
@@ -178,11 +178,15 @@
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("用户删除成功");
-            request_get("user", msg_cb_users);
+            get_users();
         }
         else {
             dialogToggle('error', res.data);
         }
+    }
+
+    function get_users(){
+        request_get("users", msg_cb_users);
     }
 </script>
 
