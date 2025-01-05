@@ -77,10 +77,10 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { ref, nextTick } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_get } from "@/common/mutual/request_api.ts"
-    import { login_status, func_login } from "@/common/mutual/auth.ts"
+    import { request_get } from "../../../common/mutual/request_api.ts"
+    import { login_status, func_login } from "../../../common/mutual/auth"
 
     const system_info = uni.getSystemInfoSync();
     // console.log(system_info)
@@ -107,6 +107,13 @@
             return;
         }
         func_login(auth_userName, auth_password);
+        
+        nextTick(() => {
+            if(auth_userName.value){
+                updating = true;
+                request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
+            }
+        })
     };
 
     function call_us() {
@@ -176,7 +183,7 @@
             });
         }
         updating = true;
-        request_get(`version?username=${auth_userName.value}`, msg_cb_version);
+        request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
     }
 
     function downloadAndInstallUpdate(downloadUrl : string) {

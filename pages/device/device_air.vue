@@ -154,7 +154,7 @@
             content: "确认" + varBoolMapping[new_var_value] + "设备？",
             success: (res) => {
                 if (res.confirm) {
-                    request_post("controlVar", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
+                    request_post("control/var", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',
@@ -180,7 +180,7 @@
             success: function (res) {
                 if (res.confirm) {
                     console.log(res.content);
-                    request_post("controlVar", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
+                    request_post("control/var", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
                     uni.showToast({
                         title: '指定发送中',
                         icon: 'loading',

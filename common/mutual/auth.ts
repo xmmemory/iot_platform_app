@@ -1,4 +1,4 @@
-import { request_auth } from "@/common/mutual/request_api.ts"
+import { request_auth } from "./request_api.ts"
 import { ref } from 'vue';
 
 export var login_status = ref<boolean>(false);
