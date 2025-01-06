@@ -33,7 +33,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
     import { onShow, onLoad } from '@dcloudio/uni-app';
-    import { request_post, request_get } from "@/common/mutual/request_api.ts"
+    import { request_del, request_get } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     // 定义响应式数据
@@ -85,8 +85,7 @@
             content: '是否删除',
             success: (res) => {
                 if (res.confirm) {
-                    request_post("modifyVar", {
-                        command: "del_var",
+                    request_del("var/id", {
                         var_id: id,
                     }, handleMessage_delVar);
                     console.log("[del var] id:", id, "name:", name);

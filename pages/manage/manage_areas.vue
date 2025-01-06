@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
     import { ref, reactive, nextTick } from 'vue';
-    import { request_post, request_get } from "@/common/mutual/request_api.ts"
+    import { request_post, request_get, request_put, request_del } from "../../common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
     //
     const msgType = ref('success');
@@ -85,11 +85,11 @@
                 { text: '删除', style: { backgroundColor: 'rgb(255,58,49)' } }
             ]
         })))
-        console.log('all_areas data:', all_areas);
+        // console.log('all_areas data:', all_areas);
     }
 
     function handleMessage_insertArea(res : { statusCode : number; data : any; }) {
-        console.log('Received WebSocket message:', res);
+        // console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("分区添加成功");
             area_name.value = ''
@@ -116,7 +116,7 @@
                 content: '是否删除',
                 success: (res) => {
                     if (res.confirm) {
-                        request_post("modifyArea", { command: "del_area", area_id: area_id }, handleMessage_delArea);
+                        request_del("area", { area_id: area_id }, msg_cb_del_area);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -129,7 +129,7 @@
                 placeholderText: '请输入新的区域名称',
                 success: function (res) {
                     if (res.confirm) {
-                        request_post("modifyArea", { command: "update_area", area_id: area_id, area_name: res.content }, handleMessage_updateArea);
+                        request_put("modify/area", { area_id: area_id, area_name: res.content }, handleMessage_updateArea);
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
@@ -154,7 +154,7 @@
         }
     }
 
-    function handleMessage_delArea(res : { statusCode : number; data : any; }) {
+    function msg_cb_del_area(res : { statusCode : number; data : any; }) {
         console.log('Received WebSocket message:', res);
         if (200 == res.statusCode) {
             messageToggle("分区删除成功");

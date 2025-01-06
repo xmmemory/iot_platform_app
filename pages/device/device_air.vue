@@ -131,68 +131,15 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post, request_get } from "@/common/mutual/request_api.ts"
+    import { request_get } from "@/common/mutual/request_api.ts"
     import { codeMapping, varBoolMapping, varStatusMapping } from '@/common/mapping.ts'
     import { deviceName, deviceArea } from "@/components/device/device.ts"
     import device_title from "@/components/device/device_title.vue";
+    import { inputValue, changeStatus } from "./update_var.ts";
 
     const device_id = ref<string | null>(null);
     let device_vars = ref(null);
     let time_run = true;
-
-    function changeStatus(var_full_code : any, var_status : string) {
-        // console.log(var_full_code, var_status)
-        let new_var_value = 'False';
-        if (var_status == "关闭") {
-            new_var_value = 'True';
-        }
-        else {
-            new_var_value = 'False';
-        }
-        uni.showModal({
-            title: '提示',
-            content: "确认" + varBoolMapping[new_var_value] + "设备？",
-            success: (res) => {
-                if (res.confirm) {
-                    request_post("control/var", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
-                    uni.showToast({
-                        title: '指定发送中',
-                        icon: 'loading',
-                        mask: true,
-                        duration: 2000
-                    })
-                } else if (res.cancel) {
-                    console.log('用户点击取消');
-                }
-            }
-        });
-    }
-
-    function handleMessage_control_res(res : { data : any; }) {
-        ;
-    }
-
-    function inputValue(var_full_code : any) {
-        uni.showModal({
-            title: '数据修改',
-            editable: true,
-            placeholderText: '请输入',
-            success: function (res) {
-                if (res.confirm) {
-                    console.log(res.content);
-                    request_post("control/var", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
-                    uni.showToast({
-                        title: '指定发送中',
-                        icon: 'loading',
-                        mask: true,
-                        duration: 2000
-                    })
-                } else if (res.cancel) {
-                    console.log('用户点击取消');
-                }
-            }
-        });
-    }
 
     // 获取页面参数并设置标题
     onLoad((options) => {

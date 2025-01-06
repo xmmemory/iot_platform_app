@@ -32,7 +32,7 @@
 <script setup lang="ts">
     import { ref, reactive } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
-    import { request_get, request_post } from "@/common/mutual/request_api.ts"
+    import { request_get, request_post, request_put } from "@/common/mutual/request_api.ts"
     import { codeMapping } from '@/common/mapping.ts'
 
     const devicd_id = ref<number | null>(null);
@@ -113,8 +113,7 @@
     const update_var = (item : VarStr) => {
         if (var_id.value) {
             //TODO
-            request_post("modifyVar", {
-                command: "update_var",
+            request_put("modify/var", {
                 var_id: var_id.value,
                 var_name: item.var_name,
                 var_code: item.var_code,
@@ -125,8 +124,7 @@
             }, handleMessage_modifyRes);
         }
         else {
-            request_post("modifyVar", {
-                command: "insert_var",
+            request_post("add/var", {
                 var_name: item.var_name,
                 var_code: item.var_code,
                 var_type: item.var_type,

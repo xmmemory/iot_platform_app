@@ -25,10 +25,11 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { onLoad, onUnload } from '@dcloudio/uni-app';
-    import { request_post, request_get } from "@/common/mutual/request_api.ts"
-    import { varBoolMapping, varStatusMapping, default_icon_addr } from '@/common/mapping.ts'
-    import { deviceName, deviceArea } from "@/components/device/device.ts"
-    import device_title from "@/components/device/device_title.vue";
+    import { request_get } from "../../common/mutual/request_api.ts"
+    import { varBoolMapping, varStatusMapping, default_icon_addr } from '../../common/mapping.ts'
+    import { deviceName, deviceArea } from "../../components/device/device.ts"
+    import device_title from "../../components/device/device_title.vue";    
+    import { formatValue, inputValue, changeStatus } from "./update_var.ts";
 
     const device_id = ref<string | null>(null);
     let device_vars = ref(null);
@@ -68,65 +69,6 @@
 
         // 否则，返回 '当前数值：' + 格式化数值
         return '当前数值：' + formatValue(item.latest_value);
-    }
-
-    // 格式化数值函数
-    function formatValue(value : any) {
-        return parseFloat(value) % 1 === 0 ? parseInt(value) : parseFloat(value).toFixed(1);
-    }
-
-    function changeStatus(var_full_code : any, var_status : string) {
-        // console.log(var_full_code, var_status)
-        let new_var_value = 'False';
-        if (var_status == "关闭") {
-            new_var_value = 'True';
-        }
-        else {
-            new_var_value = 'False';
-        }
-        uni.showModal({
-            title: '提示',
-            content: "确认" + varBoolMapping[new_var_value] + "设备？",
-            success: (res) => {
-                if (res.confirm) {
-                    request_post("control/var", { command: "flip_switch", var_full_code: var_full_code, new_var_value: new_var_value }, handleMessage_control_res);
-                    uni.showToast({
-                        title: '指定发送中',
-                        icon: 'loading',
-                        mask: true,
-                        duration: 2000
-                    })
-                } else if (res.cancel) {
-                    console.log('用户点击取消');
-                }
-            }
-        });
-    }
-
-    function handleMessage_control_res(res : { data : any; }) {
-        ;
-    }
-
-    function inputValue(var_full_code : any) {
-        uni.showModal({
-            title: '数据修改',
-            editable: true,
-            placeholderText: '请输入',
-            success: function (res) {
-                if (res.confirm) {
-                    console.log(res.content);
-                    request_post("control/var", { command: "modify_value", var_full_code: var_full_code, new_var_value: res.content }, handleMessage_control_res);
-                    uni.showToast({
-                        title: '指定发送中',
-                        icon: 'loading',
-                        mask: true,
-                        duration: 2000
-                    })
-                } else if (res.cancel) {
-                    console.log('用户点击取消');
-                }
-            }
-        });
     }
 
     // 获取页面参数并设置标题

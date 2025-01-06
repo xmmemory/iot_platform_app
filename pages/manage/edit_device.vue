@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
-    import { request_get, request_post } from "@/common/mutual/request_api.ts"
+    import { request_get, request_post, request_put } from "@/common/mutual/request_api.ts"
     import { onLoad } from '@dcloudio/uni-app'
 
     let all_areas = ref(null);
@@ -72,28 +72,26 @@
         console.log(ref)
         if (device_id.value) {
             // TODO-PATCH
-            request_post("modifyDevice", {
-                command: "update_device",
+            request_put("modify/device", {
                 device_name: ref.device_name,
                 device_num: ref.device_num,
                 area_id: ref.area_id,
                 device_id: device_id.value,
                 icon_addr: ref.icon_addr,
-            }, handleMessage_modifyRes);
+            }, msg_cb_modify_device);
         }
         else {
             // TODO
-            request_post("modifyDevice", {
-                command: "insert_device",
+            request_post("add/device", {
                 device_name: ref.device_name,
                 device_num: ref.device_num,
                 area_id: ref.area_id,
                 icon_addr: ref.icon_addr,
-            }, handleMessage_modifyRes);
+            }, msg_cb_modify_device);
         }
     }
 
-    function handleMessage_modifyRes(res : { statusCode : number; data : string; }) {
+    function msg_cb_modify_device(res : { statusCode : number; data : string; }) {
         if (200 == res.statusCode) {
             uni.showToast({
                 title: "修改完成",
