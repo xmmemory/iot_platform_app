@@ -126,10 +126,10 @@
     }
 
     function msg_cb_version(res : { data : { latest_version : any[][]; }; }) {
-        const current_version = plus.runtime.version;
+        const current_version = system_info.appVersion;
         const latest_version = res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
-        console.log("有新版本更新", current_version, latest_version);
+        console.log("版本对比", current_version, latest_version);
         if (compareVersions(latest_version, current_version) > 0) {// 提示用户更新
             uni.showModal({
                 title: '有新版本啦！',

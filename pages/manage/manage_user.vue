@@ -102,6 +102,7 @@
             messageToggle("用户添加成功");
             user_name.value = ''
             user_password.value = ''
+            user_password_confirm = ''
             get_users();
         }
         else {
