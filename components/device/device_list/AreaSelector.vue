@@ -8,7 +8,7 @@
             </span>
         </div>
         <div class="dropdown-icon" @click="toggleTabDropdown">
-            <image src="/static/svg/select.svg" style="height: 20px;width: 20px;" mode="heightFix">
+            <image src="http://app.lvrulanbio.com:7501/download/img/icon/select.svg" style="height: 20px;width: 20px;" mode="heightFix">
             </image>
         </div>
         <div v-if="showTabDropdown" class="tabs-dropdown-menu" @click.stop>

@@ -26,7 +26,7 @@ function auth_confirm(res : { statusCode : string | number; data : any; }) {
     }
 }
 
-export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }) {
+export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }, local_version : { value : string; }) {
     // console.log("login...")
     uni.showToast({
         title: '用户名密码验证',
@@ -41,6 +41,7 @@ export function func_login(auth_userName : { value : string; }, auth_password : 
             ? auth_userName.value.replace(/(-admin|-test)$/, '')
             : auth_userName.value,
         password: auth_password.value,
+        local_version: local_version,
     }
     request_auth(data, auth_confirm);
 }

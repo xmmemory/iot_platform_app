@@ -26,7 +26,7 @@
     function handleImageError(event : Event) {
         const target = event.target as HTMLImageElement;
         if (target) {
-            target.src = 'static/img/icon_device/device_default.png';
+            target.src = 'http://app.lvrulanbio.com:7501/download/img/device/device_default.png';
         }
     }
 

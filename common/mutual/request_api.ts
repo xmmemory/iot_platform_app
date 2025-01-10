@@ -163,7 +163,7 @@ function request_del_api(url : string, header : { "Content-Type" : string; }, da
     });
 }
 
-export function request_auth(data : { username : string; password : string; }, callback : { (res : { statusCode : string | number; data : any; }) : void; (arg0 : any) : void; }) {
+export function request_auth(data : { username : string; password : string; local_version: string; }, callback : { (res : { statusCode : string | number; data : any; }) : void; (arg0 : any) : void; }) {
     let header = {
         'Content-Type': 'application/json',
     };

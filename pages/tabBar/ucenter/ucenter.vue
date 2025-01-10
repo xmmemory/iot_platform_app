@@ -96,7 +96,7 @@
             uni.createPushMessage({  title: '自动登录完成',  content: '自动登录完成',  data: {    url: 'your_url'  }})
         }
     })
-    
+
     // 登录逻辑
     function login() {
         if (!auth_userName.value || !auth_password.value) {
@@ -106,10 +106,10 @@
             });
             return;
         }
-        func_login(auth_userName, auth_password);
-        
+        func_login(auth_userName, auth_password, system_info.appVersion);
+
         nextTick(() => {
-            if(auth_userName.value){
+            if (auth_userName.value) {
                 updating = true;
                 request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
             }
@@ -125,12 +125,15 @@
         })
     }
 
-    function msg_cb_version(res : { data : { latest_version : any[][]; }; }) {
-        const current_version = system_info.appVersion;
-        const latest_version = res.data.latest_version[0][0];
+    function msg_cb_version(version_res: { statusCode: number; data: { latest_version: any[][]; }; }) {
+        if (200 != version_res.statusCode) {
+            return;
+        }
+        
+        const latest_version = version_res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
-        console.log("版本对比", current_version, latest_version);
-        if (compareVersions(latest_version, current_version) > 0) {// 提示用户更新
+        console.log("版本对比", system_info.appVersion, latest_version);
+        if (compareVersions(latest_version, system_info.appVersion) > 0) {// 提示用户更新
             uni.showModal({
                 title: '有新版本啦！',
                 content: `最新版本：${latest_version}\n更新内容：${release_notes}`,
