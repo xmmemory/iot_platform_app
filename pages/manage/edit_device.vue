@@ -7,8 +7,8 @@
                     <uni-forms-item label="设备名称" required>
                         <uni-easyinput v-model="moment_device.device_name" placeholder="请输入设备名称" />
                     </uni-forms-item>
-                    <uni-forms-item label="设备序号" required>
-                        <uni-easyinput v-model="moment_device.device_num" placeholder="请输入设备序号" maxlength="2" />
+                    <uni-forms-item label="设备编号" required>
+                        <uni-easyinput v-model="moment_device.device_sn" placeholder="请输入设备编号" maxlength="15" />
                     </uni-forms-item>
                     <uni-forms-item label="所属区域" required>
                         <uni-data-checkbox v-model="moment_device.area_id" :localdata="all_areas" />
@@ -34,14 +34,14 @@
 
     interface DeviceStr {
         device_name : string;
-        device_num : string;
+        device_sn: string;
         area_id : number;
         icon_addr : string;
     }
 
     let moment_device = ref<DeviceStr>({
         device_name: '',
-        device_num: '',
+        device_sn: '',
         area_id: 0,
         icon_addr: '',
     });
@@ -74,7 +74,7 @@
             // TODO-PATCH
             request_put("modify/device", {
                 device_name: ref.device_name,
-                device_num: ref.device_num,
+                device_sn: ref.device_sn,
                 area_id: ref.area_id,
                 device_id: device_id.value,
                 icon_addr: ref.icon_addr,
@@ -84,7 +84,7 @@
             // TODO
             request_post("add/device", {
                 device_name: ref.device_name,
-                device_num: ref.device_num,
+                device_sn: ref.device_sn,
                 area_id: ref.area_id,
                 icon_addr: ref.icon_addr,
             }, msg_cb_modify_device);

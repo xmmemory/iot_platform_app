@@ -9,7 +9,7 @@
                     <view style="margin-bottom: 5px;"> APP版本: {{system_info.appVersion}} </view>
                 </view>
             </view>
-            <view v-if="auth_userName.includes('leon')" class="jump_url">
+            <view v-if="user_permission.includes('admin')" class="jump_url">
                 <view class="navi-container">
                     <navigator url="/pages/manage/manage_devices" open-type="navigate"
                         hover-class="other-navigator-hover" class="navigator-button">
@@ -19,7 +19,7 @@
                         class="navigator-button">
                         <button class="login-button" type="default">区域管理</button>
                     </navigator>
-                    <navigator v-if="auth_userName.includes('leon')" url="/pages/manage/manage_user"
+                    <navigator v-if="user_permission.includes('admin')" url="/pages/manage/manage_user"
                         open-type="navigate" hover-class="other-navigator-hover" class="navigator-button">
                         <button class="login-button" type="primary">用户管理</button>
                     </navigator>
@@ -27,11 +27,11 @@
             </view>
 
 
-            <button v-if="!auth_userName.includes('leon')" size="default" type="primary" class="navigator-button"
+            <button v-if="!user_permission.includes('admin')" size="default" type="primary" class="navigator-button"
                 @click="call_us">联系我们</button>
             <button size="default" type="primary" class="navigator-button" @click="checkUpdate">检查更新</button>
             <button size="default" type="primary" class="navigator-button" @click="signOut">退出登录</button>
-            <button v-if="auth_userName.includes('leon')" size="default" type="warn" class="navigator-button"
+            <button v-if="user_permission.includes('admin')" size="default" type="warn" class="navigator-button"
                 @click="clearTotalData">清空缓存数据</button>
         </view>
     </template>
@@ -80,7 +80,7 @@
     import { ref, nextTick } from 'vue';
     import { onLoad } from '@dcloudio/uni-app'
     import { request_get } from "../../../common/mutual/request_api.ts"
-    import { login_status, func_login } from "../../../common/mutual/auth"
+    import { login_status, func_login, user_permission } from "../../../common/mutual/auth"
 
     const system_info = uni.getSystemInfoSync();
     // console.log(system_info)
@@ -93,9 +93,44 @@
     onLoad(() => {
         if (false == login_status.value && auth_userName.value && auth_password.value) {
             login();
-            uni.createPushMessage({  title: '自动登录完成',  content: '自动登录完成',  data: {    url: 'your_url'  }})
+            // 判断是否为手机APP端
+            if (system_info.platform === 'ios' || system_info.platform === 'android') {
+                uni.createPushMessage({ title: '自动登录完成', content: '自动登录完成', data: { url: 'your_url' } })
+            }
         }
     })
+
+    function auth_confirm(res : { statusCode : string | number; data : any; }) {
+        if (200 == res.statusCode) {
+            uni.showToast({
+                title: '登录成功',
+                icon: 'success',
+                mask: true,
+                duration: 500
+            });
+            uni.setStorageSync('cookie', res.data);
+            login_status.value = true;
+            console.log("login succeed, cookie:",  res.data)
+            request_get(`user/info/f?username=${auth_userName.value}`, msg_cb_user_info);
+        } else {
+            uni.showToast({
+                title: res.data,
+                icon: 'error',
+                mask: true,
+                duration: 1000
+            });
+            uni.removeStorageSync('auth_password');
+            console.log(res);
+        }
+    }
+
+    function msg_cb_user_info(res){
+        if (200 != res.statusCode) {
+            return;
+        }
+        user_permission.value = res.data[0].permission;
+        console.log("user_permission: ", user_permission.value)
+    }
 
     // 登录逻辑
     function login() {
@@ -106,7 +141,7 @@
             });
             return;
         }
-        func_login(auth_userName, auth_password, system_info.appVersion);
+        func_login(auth_userName, auth_password, system_info.appVersion, auth_confirm);
 
         nextTick(() => {
             if (auth_userName.value) {
@@ -125,11 +160,11 @@
         })
     }
 
-    function msg_cb_version(version_res: { statusCode: number; data: { latest_version: any[][]; }; }) {
+    function msg_cb_version(version_res : { statusCode : number; data : { latest_version : any[][]; }; }) {
         if (200 != version_res.statusCode) {
             return;
         }
-        
+
         const latest_version = version_res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
         console.log("版本对比", system_info.appVersion, latest_version);
@@ -142,7 +177,7 @@
                 success: (res) => {
                     if (res.confirm) {
                         // 下载并安装更新
-                        const download_url = "http://49.232.133.59:7500/download/" + latest_version + ".apk"
+                        const download_url = "http://app.lvrulanbio.com:7501/download/" + latest_version + ".apk"
                         console.log(download_url);
                         downloadAndInstallUpdate(download_url);
                     }
@@ -259,7 +294,10 @@
     .auth_logo {
         height: 100px;
         width: 100px;
-        margin: 250rpx 18% 120rpx 18%;
+        margin: 280rpx auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .auth_input {

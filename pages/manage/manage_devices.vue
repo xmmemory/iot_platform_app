@@ -49,7 +49,7 @@
     });
 
     function handleMessage_devices(res : { data : any; }) {
-        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_num, item.area_id]);
+        all_devices.value = res.data.map(item => [item.device_id, item.device_name, item.device_sn, item.area_id]);
         // console.log('Received msg all_devices:', all_devices);
     }
 

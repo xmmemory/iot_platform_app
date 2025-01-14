@@ -9,7 +9,7 @@
             <img :src="'http://app.lvrulanbio.com:7501/download/img/device/' + device.icon_addr + '.svg'" alt="暂无图标"
                 class="device-icon" @error="handleImageError($event)" />
             <div class="device-info">
-                <div class="device-title">{{ device.device_name }}{{ device.device_num }}</div>
+                <div class="device-title">{{ device.device_name }}</div>
                 <div class="device-details">
                     {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} |
                     {{ "在线" }}

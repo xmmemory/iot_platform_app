@@ -2,31 +2,9 @@ import { request_auth } from "./request_api.ts"
 import { ref } from 'vue';
 
 export var login_status = ref<boolean>(false);
+export var user_permission = ref<string>("user");
 
-function auth_confirm(res : { statusCode : string | number; data : any; }) {
-    if (200 == res.statusCode) {
-        uni.showToast({
-            title: '登录成功',
-            icon: 'success',
-            mask: true,
-            duration: 500
-        });
-        uni.setStorageSync('cookie', res.data);
-        login_status.value = true;
-        console.log("login succeed, cookie:",  res.data)
-    } else {
-        uni.showToast({
-            title: res.data,
-            icon: 'error',
-            mask: true,
-            duration: 1000
-        });
-        uni.removeStorageSync('auth_password');
-        console.log(res);
-    }
-}
-
-export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }, local_version : { value : string; }) {
+export function func_login(auth_userName : { value : string; }, auth_password : { value : string; }, local_version: string, callback) {
     // console.log("login...")
     uni.showToast({
         title: '用户名密码验证',
@@ -43,5 +21,6 @@ export function func_login(auth_userName : { value : string; }, auth_password : 
         password: auth_password.value,
         local_version: local_version,
     }
-    request_auth(data, auth_confirm);
+    console.log(data)
+    request_auth(data, callback);
 }
