@@ -78,6 +78,11 @@
                 "style": {
                     "navigationBarTitleText": "设备记录"
                 }
+            }, {
+                "path": "device_record_chart",
+                "style": {
+                    "navigationBarTitleText": "设备记录_chart"
+                }
             }]
         },
         {

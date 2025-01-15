@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "~/*": ["./*"],
+      "vue": ["node_modules/vue/dist/vue.d.ts"],
+      "@dcloudio/*": ["node_modules/@dcloudio/*/types"]
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@dcloudio/types",
+      "node_modules/vue/types"
+    ]
+  },
+  "include": ["**/*.ts", "**/*.vue"],
+  "exclude": ["node_modules"]
+}

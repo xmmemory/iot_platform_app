@@ -9,20 +9,19 @@
 	},
 	"repository": "https://github.com/dcloudio/hello-uniapp.git",
 	"keywords": [
-        "hello-uniapp",
-        "uni-app",
-        "uni-ui",
-        "示例工程"
-    ],
+		"hello-uniapp",
+		"uni-app",
+		"uni-ui",
+		"示例工程"
+	],
 	"author": "",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/dcloudio/hello-uniapp/issues"
 	},
 	"homepage": "https://github.com/dcloudio/hello-uniapp#readme",
-	"dependencies": {},
-    "dcloudext": {
-        "sale": {
+	"dcloudext": {
+		"sale": {
 			"regular": {
 				"price": "0.00"
 			},
@@ -38,8 +37,8 @@
 			"data": "无",
 			"permissions": "无"
 		},
-        "npmurl": "",
-        "type": "uniapp-template-project"
+		"npmurl": "",
+		"type": "uniapp-template-project"
 	},
 	"uni_modules": {
 		"dependencies": [],
@@ -81,15 +80,14 @@
 				"快应用": {
 					"华为": "y",
 					"联盟": "y"
-                },
-                "Vue": {
-                    "vue2": "y",
-                    "vue3": "y"
-                }
+				},
+				"Vue": {
+					"vue2": "y",
+					"vue3": "y"
+				}
 			}
 		}
 	},
-
 	"uni-app": {
 		"scripts": {
 			"mp-dingtalk": {
@@ -111,5 +109,9 @@
 				}
 			}
 		}
+	},
+	"devDependencies": {
+		"@dcloudio/types": "^3.4.14",
+		"@types/vue": "^1.0.31"
 	}
 }

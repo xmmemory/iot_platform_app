@@ -21,6 +21,6 @@ export function func_login(auth_userName : { value : string; }, auth_password : 
         password: auth_password.value,
         local_version: local_version,
     }
-    console.log(data)
+    // console.log(data)
     request_auth(data, callback);
 }

@@ -129,7 +129,7 @@
             return;
         }
         user_permission.value = res.data[0].permission;
-        console.log("user_permission: ", user_permission.value)
+        // console.log("user_permission: ", user_permission.value)
     }
 
     // 登录逻辑
@@ -167,7 +167,7 @@
 
         const latest_version = version_res.data.latest_version[0][0];
         const release_notes = "优化了用户体验";
-        console.log("版本对比", system_info.appVersion, latest_version);
+        // console.log("版本对比", system_info.appVersion, latest_version);
         if (compareVersions(latest_version, system_info.appVersion) > 0) {// 提示用户更新
             uni.showModal({
                 title: '有新版本啦！',
@@ -177,7 +177,7 @@
                 success: (res) => {
                     if (res.confirm) {
                         // 下载并安装更新
-                        const download_url = "http://app.lvrulanbio.com:7501/download/" + latest_version + ".apk"
+                        const download_url = "http://app.lvrulanbio.com:7501/download/apk/" + latest_version + ".apk"
                         console.log(download_url);
                         downloadAndInstallUpdate(download_url);
                     }
