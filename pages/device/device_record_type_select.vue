@@ -23,7 +23,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  tabs: () => ['总览', '报表', '档案']
+  tabs: () => ['总览', '报表', '数据']
 });
 
 const emit = defineEmits(['update:modelValue', 'change']);

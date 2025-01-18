@@ -1,7 +1,7 @@
 <template>
     <view class="header">
         <text class="device-name">{{deviceName}}</text>
-        <text class="device-area">{{deviceArea}}</text>
+        <text v-if="deviceArea && 'null' != deviceArea" class="device-area">{{deviceArea}}</text>
     </view>
 </template>
 

@@ -23,9 +23,9 @@
                     <uni-td>
                         <view class="uni-group">
                             <button type="default" size="mini"
-                                @click="device_edit(item[0], item[1]+item[2])">编辑</button>
-                            <button type="primary" size="mini" @click="vars_edit(item[0], item[1]+item[2])">配置</button>
-                            <button type="warn" size="mini" @click="device_del(item[0], item[1]+item[2])">删除</button>
+                                @click="device_edit(item[0], item[1])">编辑</button>
+                            <button type="primary" size="mini" @click="vars_edit(item[0], item[1])">配置</button>
+                            <button type="warn" size="mini" @click="device_del(item[0], item[1])">删除</button>
                         </view>
                     </uni-td>
                 </uni-tr>
@@ -66,6 +66,7 @@
     }
 
     function vars_edit(id, name) {
+        console.log(name)
         uni.navigateTo({
             url: `/pages/manage/manage_vars?device_id=${id}&device_name=${name}`,
         });

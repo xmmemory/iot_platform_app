@@ -20,7 +20,7 @@
                 <template v-else-if="selectedTab === '报表'">
                     <chart :chartData="chartData"></chart>
                 </template>
-                <template v-else-if="selectedTab === '档案'">
+                <template v-else-if="selectedTab === '数据'">
                     <view class="row" v-for="(item) in filteredRecords" :key="item.created_at">
                         <view class="title">
                             <text class="var-name">{{ var_name }}:</text>
