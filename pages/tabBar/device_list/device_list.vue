@@ -31,7 +31,8 @@
                 mask: true,
                 duration: 2000
             })
-            request_get("projects", msg_cb_projects);
+            const username = uni.getStorageSync('auth_userName');
+            request_get(`project/f?user_name=${username}`, msg_cb_projects);
         }
     })
 
