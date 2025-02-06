@@ -10,9 +10,11 @@
                 class="device-icon" @error="handleImageError($event)" />
             <div class="device-info">
                 <div class="device-title">{{ device.device_name }}</div>
-                <div class="device-details">
-                    {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} |
-                    {{ "在线" }}
+                <div v-if="device.status === 'NORMAL'" class="device-details">
+                    {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} | {{ ' 在线'}}
+                </div>
+                <div v-else class="device-details-error">
+                    {{ all_areas.find(area => area.area_id === device.area_id)?.area_name || '未知区域' }} | {{ ' 设备离线' }}
                 </div>
             </div>
         </div>
@@ -60,9 +62,8 @@
             area_id : any; id : number
         }) => area.area_id === device.area_id)?.area_name || "未指定分区";
         const displayArea = areaName === "全部设备" ? "" : " | " + areaName;
-        const status = device.status ? device.status : "";
-
-        return `${basePath}?id=${device.device_id}&name=${device.device_name}${status}&area=${displayArea}`;
+        
+        return `${basePath}?id=${device.device_id}&name=${device.device_name}&area=${displayArea}`;
     };
 </script>
 
@@ -98,6 +99,10 @@
                 margin-bottom: 10px;
             }
 
+            .offline-status {
+               color: red;
+            }
+
             .device-info {
                 .device-title {
                     font-size: 16px;
@@ -107,6 +112,11 @@
                 .device-details {
                     font-size: 16px;
                     color: #666;
+                }
+                
+                .device-details-error {
+                    font-size: 16px;
+                    color: #df1f06;
                 }
             }
         }
