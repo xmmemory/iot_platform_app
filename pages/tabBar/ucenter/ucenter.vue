@@ -108,10 +108,11 @@
                 mask: true,
                 duration: 500
             });
-            uni.setStorageSync('cookie', res.data);
+            uni.setStorageSync('cookie', res.data[0].token);
+            user_permission.value = res.data[0].permission;
             login_status.value = true;
             console.log("login succeed, cookie:",  res.data)
-            request_get(`user/info/f?username=${auth_userName.value}`, msg_cb_user_info);
+            request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
         } else {
             uni.showToast({
                 title: res.data,
@@ -124,14 +125,6 @@
         }
     }
 
-    function msg_cb_user_info(res){
-        if (200 != res.statusCode) {
-            return;
-        }
-        user_permission.value = res.data[0].permission;
-        // console.log("user_permission: ", user_permission.value)
-    }
-
     // 登录逻辑
     function login() {
         if (!auth_userName.value || !auth_password.value) {
@@ -142,13 +135,6 @@
             return;
         }
         func_login(auth_userName, auth_password, system_info.appVersion, auth_confirm);
-
-        nextTick(() => {
-            if (auth_userName.value) {
-                updating = true;
-                request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
-            }
-        })
     };
 
     function call_us() {
@@ -160,13 +146,12 @@
         })
     }
 
-    function msg_cb_version(version_res : { statusCode : number; data : { latest_version : any[][]; }; }) {
-        if (200 != version_res.statusCode) {
+    function msg_cb_version(res: { statusCode: number; data: { latest_version: any[][]; release_notes: any; }; }) {
+        if (200 != res.statusCode) {
             return;
         }
-
-        const latest_version = version_res.data.latest_version[0][0];
-        const release_notes = "优化了用户体验";
+        const latest_version = res.data.latest_version[0][0];
+        const release_notes = res.data.release_notes ? res.data.release_notes: "优化了用户体验";
         // console.log("版本对比", system_info.appVersion, latest_version);
         if (compareVersions(latest_version, system_info.appVersion) > 0) {// 提示用户更新
             uni.showModal({
@@ -195,7 +180,7 @@
         }
     }
 
-    function compareVersions(version1, version2) {
+    function compareVersions(version1: string, version2: string) {
         const v1Parts = version1.split('.').map(Number);  // 将版本号按 "." 分割并转换为数字数组
         const v2Parts = version2.split('.').map(Number);  // 同上
 
@@ -219,6 +204,7 @@
                 mask: true,
                 duration: 1000
             });
+            return;
         }
         updating = true;
         request_get(`version/f?username=${auth_userName.value}`, msg_cb_version);
@@ -233,7 +219,7 @@
                 console.log("Download successful, file path:", download.filename);
 
                 // 安装 APK
-                plus.runtime.install(download.filename, {}, () => {
+                plus.runtime.install(download.filename as string, {}, () => {
                     console.log("Install successful, restarting...");
                     uni.showToast({ title: '更新成功，即将重启应用', icon: 'none' });
                     plus.runtime.restart();
@@ -253,7 +239,7 @@
                 const downloadedSize = task.downloadedSize; // 已下载字节数
                 const totalSize = task.totalSize; // 总字节数
 
-                if (totalSize > 0) {
+                if (totalSize && downloadedSize && totalSize > 0) {
                     const progress = Math.floor((downloadedSize / totalSize) * 100);
                     console.log(`Download progress: ${progress}%`);
                     // 更新进度条

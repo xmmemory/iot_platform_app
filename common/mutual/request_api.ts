@@ -1,24 +1,25 @@
 import { server_url } from "./server_parameter.ts"
 
-export function request_get(get_url : string, callback ?: (arg0 : any) => void) {
-    let header = {
-        'Content-Type': 'application/json',
-    };
+const defaultHeader = {
+    'Content-Type': 'application/json',
+};
+const REQUEST_TIMEOUT = 3000;
 
-    const systemInfo = uni.getSystemInfoSync();
-    if (systemInfo.uniPlatform === 'mp-weixin') {
-        header['cookie'] = uni.getStorageSync('cookie').toString() || 'null';
-    } else {
-        ;
-    }
+
+export function request_get(get_url: string, callback?: (arg0: any) => void) {
+    const token = uni.getStorageSync('cookie');  // 获取存储的 Token
+    const header = { 
+        ...defaultHeader, 
+        ...(token && { Authorization: `Bearer ${token}` } ),
+    };
     request_get_api(server_url + get_url, header, callback);
 }
 
-function request_get_api(url : string, header : { "Content-Type" : string; }, callback ?: (arg0 : any) => void) {
+function request_get_api(url: string, header: Record<string, string>, callback?: (arg0: any) => void) {
     uni.request({
         url: url,
         method: 'GET',
-        timeout: 3000,
+        timeout: REQUEST_TIMEOUT,
         header: header,
         withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
@@ -40,25 +41,17 @@ function request_get_api(url : string, header : { "Content-Type" : string; }, ca
     });
 }
 
-export function request_post(post_url : string, data : any, callback ?: (arg0 : any) => void) {
-    let header = {
-        'Content-Type': 'application/json',
-    };
-
-    const systemInfo = uni.getSystemInfoSync();
-    if (systemInfo.uniPlatform === 'mp-weixin') {
-        header['cookie'] = uni.getStorageSync('cookie').toString() || 'null';
-    } else {
-        ;
-    }
+export function request_post(post_url: string, data: any, callback?: (arg0: any) => void) {
+    const token = uni.getStorageSync('cookie');  // 获取存储的 Token
+    const header = { ...defaultHeader, ...token && { Authorization: `Bearer ${token}` } };
     request_post_api(server_url + post_url, header, data, callback);
 }
 
-function request_post_api(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : any) => void) {
+function request_post_api(url: string, header: { "Content-Type": string; }, data: any, callback?: (arg0: any) => void) {
     uni.request({
         url: url,
         method: 'POST',
-        timeout: 5000,
+        timeout: REQUEST_TIMEOUT,
         header: header,
         withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
@@ -81,25 +74,17 @@ function request_post_api(url : string, header : { "Content-Type" : string; }, d
     });
 }
 
-export function request_put(post_url : string, data : any, callback ?: (arg0 : any) => void) {
-    let header = {
-        'Content-Type': 'application/json',
-    };
-
-    const systemInfo = uni.getSystemInfoSync();
-    if (systemInfo.uniPlatform === 'mp-weixin') {
-        header['cookie'] = uni.getStorageSync('cookie').toString() || 'null';
-    } else {
-        ;
-    }
+export function request_put(post_url: string, data: any, callback?: (arg0: any) => void) {
+    const token = uni.getStorageSync('cookie');  // 获取存储的 Token
+    const header = { ...defaultHeader, ...token && { Authorization: `Bearer ${token}` } };
     request_put_api(server_url + post_url, header, data, callback);
 }
 
-function request_put_api(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : any) => void) {
+function request_put_api(url: string, header: { "Content-Type": string; }, data: any, callback?: (arg0: any) => void) {
     uni.request({
         url: url,
         method: 'PUT',
-        timeout: 5000,
+        timeout: REQUEST_TIMEOUT,
         header: header,
         withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
@@ -122,25 +107,17 @@ function request_put_api(url : string, header : { "Content-Type" : string; }, da
     });
 }
 
-export function request_del(post_url : string, data : any, callback ?: (arg0 : any) => void) {
-    let header = {
-        'Content-Type': 'application/json',
-    };
-
-    const systemInfo = uni.getSystemInfoSync();
-    if (systemInfo.uniPlatform === 'mp-weixin') {
-        header['cookie'] = uni.getStorageSync('cookie').toString() || 'null';
-    } else {
-        ;
-    }
+export function request_del(post_url: string, data: any, callback?: (arg0: any) => void) {
+    const token = uni.getStorageSync('cookie');  // 获取存储的 Token
+    const header = { ...defaultHeader, ...token && { Authorization: `Bearer ${token}` } };
     request_del_api(server_url + post_url, header, data, callback);
 }
 
-function request_del_api(url : string, header : { "Content-Type" : string; }, data : any, callback ?: (arg0 : any) => void) {
+function request_del_api(url: string, header: { "Content-Type": string; }, data: any, callback?: (arg0: any) => void) {
     uni.request({
         url: url,
         method: 'DELETE',
-        timeout: 5000,
+        timeout: REQUEST_TIMEOUT,
         header: header,
         withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
@@ -163,7 +140,7 @@ function request_del_api(url : string, header : { "Content-Type" : string; }, da
     });
 }
 
-export function request_auth(data : { username : string; password : string; local_version: string; }, callback : { (res : { statusCode : string | number; data : any; }) : void; (arg0 : any) : void; }) {
+export function request_auth(data: { username: string; password: string; local_version: string; }, callback: { (res: { statusCode: string | number; data: any; }): void; (arg0: any): void; }) {
     let header = {
         'Content-Type': 'application/json',
     };
