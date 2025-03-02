@@ -21,7 +21,7 @@ function request_get_api(url: string, header: Record<string, string>, callback?:
         method: 'GET',
         timeout: REQUEST_TIMEOUT,
         header: header,
-        withCredentials: true, // 跨域请求时携带凭证（cookies）
+        // withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
         success: (res) => {
             // 如果 callback 存在，则调用它
@@ -53,7 +53,7 @@ function request_post_api(url: string, header: { "Content-Type": string; }, data
         method: 'POST',
         timeout: REQUEST_TIMEOUT,
         header: header,
-        withCredentials: true, // 跨域请求时携带凭证（cookies）
+        // withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
         data: data,
         success: (res) => {
@@ -86,7 +86,7 @@ function request_put_api(url: string, header: { "Content-Type": string; }, data:
         method: 'PUT',
         timeout: REQUEST_TIMEOUT,
         header: header,
-        withCredentials: true, // 跨域请求时携带凭证（cookies）
+        // withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
         data: data,
         success: (res) => {
@@ -119,7 +119,7 @@ function request_del_api(url: string, header: { "Content-Type": string; }, data:
         method: 'DELETE',
         timeout: REQUEST_TIMEOUT,
         header: header,
-        withCredentials: true, // 跨域请求时携带凭证（cookies）
+        // withCredentials: true, // 跨域请求时携带凭证（cookies）
         enableCookie: true,
         data: data,
         success: (res) => {
